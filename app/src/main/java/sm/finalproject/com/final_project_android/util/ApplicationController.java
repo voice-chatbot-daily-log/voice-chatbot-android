@@ -14,7 +14,7 @@ public class ApplicationController extends Application {
     public static Context appContext = null;
     private static ApplicationController instance;
     //test용 url
-    private static String baseUrl = "https://dialogflow.googleapis.com/v2beta1/projects/newagent-e68c4/agent/environments/draft/users/-/sessions/c15630bf-b4f7-ae3a-8707-234fe040dda9:detectIntent/";
+    private static String baseUrl = "https://dialogflow.googleapis.com/v2/projects/dflow-88b76/agent/sessions/90fad3c2-eba6-7e7b-4062-8bb77c629132:detectIntent/";
 
     public static ApplicationController getInstance() {
         return instance;

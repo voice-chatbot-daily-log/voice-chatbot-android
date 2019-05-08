@@ -3,6 +3,7 @@ package sm.finalproject.com.final_project_android;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -36,6 +37,7 @@ import sm.finalproject.com.final_project_android.model.PostChatResponseData;
 import sm.finalproject.com.final_project_android.model.QueryInput;
 import sm.finalproject.com.final_project_android.model.QueryInputData;
 import sm.finalproject.com.final_project_android.networkService.NetworkService;
+import sm.finalproject.com.final_project_android.start.VoiceChatActivty;
 import sm.finalproject.com.final_project_android.util.ApplicationController;
 
 import static com.kakao.util.helper.Utility.getKeyHash;
@@ -43,11 +45,25 @@ import static com.kakao.util.helper.Utility.getPackageInfo;
 
 public class MainActivity extends AppCompatActivity{
 
+    Button btn_start;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        btn_start = findViewById(R.id.btn_start);
+
+        btn_start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,VoiceChatActivty.class);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
 

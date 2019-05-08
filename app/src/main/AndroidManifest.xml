@@ -29,7 +29,7 @@
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"
-            android:value="2b60965bf487e37fca3e74fc855d8437" />
+            android:value="373edafe6b3ac5dcbc5b65cc29b2fb9d" />
 
         <activity android:name=".start.VoiceChatActivty"></activity>
     </application>
