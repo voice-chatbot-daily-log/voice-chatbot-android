@@ -57,7 +57,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
     ///////////////////////////
     private static final int REQUEST_CODE_AUDIO_AND_WRITE_EXTERNAL_STORAGE = 0;
     final String auth_head = "Bearer ";
-    final String auth_body = "ya29.c.El8DBwu1U51bA_mUCBexs1m_TgnoNjVo82oWHwtfRLbDiqxTmVPyHTtbWdjQemGQ1qf57vNMzBGbPZHIzpNtGO2K5jX1FpLM0GItsssjyrbNeUVObhetr_3UZ1p5GDIF1g";
+    final String auth_body = "ya29.c.El8DB4KaE3s235z_qsnUIUoEKWYA62xJ6m8ER4Q7Bhf_i6yIp3jPIVUbKctTflR5wOjR0FizwCwluKQT-GC-91Kk9Is0_jwQ-z8q9zjMTNFxsRPC72xSWVn1zc_EvzaIKw";
 
 
     private Context mContext;
@@ -75,9 +75,8 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
 
         /////////hash key 받는곳//////////
-        mContext = getApplicationContext();
-        String key = getKeyHash(mContext);
-        Log.d("Key", "HashKey:" + key);
+
+        getHashKey();
         ////////////////////////////////
 
 
@@ -219,8 +218,6 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
     public void onResults(Bundle results) {
 
 
-
-
         final StringBuilder builder = new StringBuilder();
 
 
@@ -259,22 +256,6 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
     }
 
-    public static String getKeyHash(final Context context) {
-        PackageInfo packageInfo = getPackageInfo(context, PackageManager.GET_SIGNATURES);
-        if (packageInfo == null)
-            return null;
-
-        for (Signature signature : packageInfo.signatures) {
-            try {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                return Base64.encodeToString(md.digest(), Base64.NO_WRAP);
-            } catch (NoSuchAlgorithmException e) {
-                Log.w("main", "Unable to get MessageDigest. signature=" + signature, e);
-            }
-        }
-        return null;
-    }
 
 
     public void postInputText(String auth,String input){
@@ -304,4 +285,25 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
             }
         });
     }
+
+    private void getHashKey(){
+
+        try{
+
+            PackageInfo info = getPackageManager().getPackageInfo("sm.finalproject.com.final_project_android", PackageManager.GET_SIGNATURES);
+
+            for(Signature signature : info.signatures){
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("TAG: ","key_hash: "+ Base64.encodeToString(md.digest(),Base64.DEFAULT));
+            }
+
+        } catch (PackageManager.NameNotFoundException e){
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e){
+            e.printStackTrace();
+        }
+
+    }
+
 }
