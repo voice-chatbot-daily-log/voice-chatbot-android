@@ -6,10 +6,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <!-- 동적 권한 부여-->
+    <!-- 동적 권한 부여 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <application
@@ -32,6 +31,7 @@
             android:name="com.kakao.sdk.AppKey"
             android:value="2b60965bf487e37fca3e74fc855d8437" />
 
+        <activity android:name=".start.VoiceChatActivty"></activity>
     </application>
 
 </manifest>
