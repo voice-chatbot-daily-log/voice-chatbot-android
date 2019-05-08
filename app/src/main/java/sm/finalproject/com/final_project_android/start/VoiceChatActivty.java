@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.speech.tts.Voice;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -48,8 +50,11 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
     NetworkService networkService;
     Button click;
     TextView tv_result;
+
+    //newtone API 사용////////
     private TextToSpeechClient ttsClient;
     private SpeechRecognizerClient sttClient;
+    ///////////////////////////
     private static final int REQUEST_CODE_AUDIO_AND_WRITE_EXTERNAL_STORAGE = 0;
     final String auth_head = "Bearer ";
     final String auth_body = "ya29.c.El8DBwu1U51bA_mUCBexs1m_TgnoNjVo82oWHwtfRLbDiqxTmVPyHTtbWdjQemGQ1qf57vNMzBGbPZHIzpNtGO2K5jX1FpLM0GItsssjyrbNeUVObhetr_3UZ1p5GDIF1g";
@@ -79,6 +84,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
         //통신 post 설정//
         networkService = ApplicationController.getInstance().getNetworkService();
         ///////////////
+
 
 
 
@@ -211,6 +217,8 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
     @Override
     public void onResults(Bundle results) {
+
+
 
 
         final StringBuilder builder = new StringBuilder();
