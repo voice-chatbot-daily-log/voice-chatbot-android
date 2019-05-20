@@ -74,4 +74,5 @@ public class ChatAdapter extends RecyclerView.Adapter {
         }
     }
 
+    //풀리퀘 예시
 }
