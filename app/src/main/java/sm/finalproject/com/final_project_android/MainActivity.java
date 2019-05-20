@@ -8,6 +8,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Handler;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,259 +48,134 @@ import sm.finalproject.com.final_project_android.util.ApplicationController;
 import static com.kakao.util.helper.Utility.getKeyHash;
 import static com.kakao.util.helper.Utility.getPackageInfo;
 
-public class MainActivity extends AppCompatActivity implements SpeechRecognizeListener,TextToSpeechListener{
+public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
-
+    Intent i;
+    SpeechRecognizer mRecognizer;
     Button btn_start;
     Handler handler;
 
-
-
-    //newtone API 사용////////
-    private TextToSpeechClient main_ttsClient;
-    private SpeechRecognizerClient main_sttClient;
-    //////
-
-
-
+    TextToSpeech tts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         btn_start = findViewById(R.id.btn_start);
         handler = new Handler();
 
-
-
-        // SDK 초기화
-
-        SpeechRecognizerManager.getInstance().initializeLibrary(this);
-        TextToSpeechManager.getInstance().initializeLibrary(getApplicationContext());
-//
-        //Text to Text 세팅////
-        main_ttsClient = new TextToSpeechClient.Builder()
-                .setSpeechMode(TextToSpeechClient.NEWTONE_TALK_1)     // 음성합성방식
-                .setSpeechSpeed(0.5)            // 발음 속도(0.5~4.0)
-                .setSpeechVoice(TextToSpeechClient.VOICE_WOMAN_DIALOG_BRIGHT)  //TTS 음색 모드 설정(여성 차분한 낭독체)
-                .setListener(MainActivity.this)
-                .build();
-
-
-        Thread th = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                main_ttsClient.play("시작하시려면 시작이라고 말해주세요");
-                try {
-
-                    Thread.sleep(3900);
-                    main_ttsClient.stop();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-
-                }
-
-            }
-        });
-        th.start();
-
-
-
-        String main_serviceType = SpeechRecognizerClient.SERVICE_TYPE_WEB;
-
-        SpeechRecognizerClient.Builder main_builder = new SpeechRecognizerClient.Builder().setServiceType(main_serviceType);
-
-        main_sttClient = main_builder.build();
-
-        main_sttClient.setSpeechRecognizeListener(MainActivity.this);
-
+        tts = new TextToSpeech(this, this);
 
         handler.postDelayed(new Runnable() {
             public void run() {
-
-                main_sttClient.startRecording(true);
-
-                Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.1", Toast.LENGTH_SHORT).show();
-
+                tts.stop();
+                startListening();
             }
-        }, 3900);  // 2000은 2초를 의미합니다.
-
-
-
-
-
-
-        btn_start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,VoiceChatActivty.class);
-                startActivity(intent);
-            }
-        });
-
+        }, 3000);  // 2000은 2초를 의미합니다.
 
     }
 
-
-    @Override
-    public void onReady() {
-
-
-//        Thread th3 = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    Thread.sleep(5000);
-//                    main_ttsClient.stop();
-//
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//
-//        handler.postDelayed(new Runnable() {
-//            public void run() {
-//                if(isVoiceInteraction()==false) {
-//                    main_ttsClient.play("다시말해주세요");
-//                }
-//            }
-//        }, 3000);
-//        th3.start();
-//
-//        handler.postDelayed(new Runnable() {
-//        public void run() {
-//            main_sttClient.startRecording(true);
-//
-//            Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.2", Toast.LENGTH_SHORT).show();
-//        }
-//    }, 5100);
-
-
-
-
-}
-
-    @Override
-    public void onBeginningOfSpeech() {
-
-
-    }
-
-    @Override
-    public void onEndOfSpeech() {
-
-    }
-
-    @Override
-    public void onError(int errorCode, String errorMsg) {
-
-    }
-
-    @Override
-    public void onPartialResult(String partialResult) {
-
-    }
-
-    @Override
-    public void onResults(Bundle results) {
-
-        Log.e("넘어옴?","ㅇㅇ");
-
-
-
-        final StringBuilder builder = new StringBuilder();
-
-
-        final ArrayList<String> texts = results.getStringArrayList(SpeechRecognizerClient.KEY_RECOGNITION_RESULTS);
-        ArrayList<Integer> confs = results.getIntegerArrayList(SpeechRecognizerClient.KEY_CONFIDENCE_VALUES);
-
-
-
-        for (int i = 0; i < texts.size(); i++) {
-            builder.append(texts.get(i));
-            builder.append(" (");
-            builder.append(confs.get(i).intValue());
-            builder.append(")\n");
-        }
-
-        final Activity activity = this;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-                String inputText = texts.get(0);
-                Toast.makeText(getApplicationContext(),inputText,Toast.LENGTH_SHORT).show();
-                if (activity.isFinishing()) return;
-
-                if(inputText.equals("시작")){
-
-                    Intent intent = new Intent(MainActivity.this,VoiceChatActivty.class);
-                    startActivity(intent);
-                    main_sttClient.stopRecording();
-                    //main_sttClient.setSpeechRecognizeListener(null);
-
-
-                }else{
-
-                    Thread th2 = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            main_ttsClient.play("다시말해주세요");
-                            try {
-
-                                Thread.sleep(1500);
-                                main_ttsClient.stop();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-
-                            }
-
-                        }
-                    });
-                    th2.start();
-
-
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
-
-                            main_sttClient.startRecording(true);
-
-                            Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.3", Toast.LENGTH_SHORT).show();
-
-
-                        }
-                    }, 2000);  // 2000은 2초를 의미합니다.
-
-
-
-                }
-
-
-
-            }
-        });
-
-    }
-
-    @Override
-    public void onAudioLevel(float audioLevel) {
-
-    }
-
-    @Override
-    public void onFinished() {
-        main_sttClient.stopRecording();
-
+    public void onInit(int status) {
+        String startText = "시작하시려면 시작이라고 말하세요.";
+        tts.speak(startText, TextToSpeech.QUEUE_FLUSH, null);
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        main_sttClient.stopRecording();
+        tts.shutdown();
 
     }
+
+    private void startListening() {
+
+        Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        //intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
+        i.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
+
+        mRecognizer = SpeechRecognizer.createSpeechRecognizer(MainActivity.this);
+        Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+
+        if (PermissionUtils.checkAudioRecordPermission(MainActivity.this)) {
+            mRecognizer.setRecognitionListener(mSTTListener);
+            mRecognizer.startListening(i);
+        }
+
+    }
+
+    public RecognitionListener mSTTListener = new RecognitionListener() {
+        @Override
+        public void onReadyForSpeech(Bundle params) {
+
+        }
+
+        @Override
+        public void onBeginningOfSpeech() {
+
+        }
+
+        @Override
+        public void onRmsChanged(float rmsdB) {
+
+        }
+
+        @Override
+        public void onBufferReceived(byte[] buffer) {
+
+        }
+
+        @Override
+        public void onEndOfSpeech() {
+
+        }
+
+        @Override
+        public void onError(int error) {
+
+        }
+
+        @Override
+        public void onResults(Bundle results) {
+            final ArrayList<String> texts = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+
+            String inputText = texts.get(0);
+            Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT);
+
+            if (inputText.equals("시작")) {
+                Intent intent = new Intent(MainActivity.this, VoiceChatActivty.class);
+                startActivity(intent);
+            }
+            
+            else {
+                String sttError = "다시 말해주세요.";
+                tts.speak(sttError, TextToSpeech.QUEUE_FLUSH, null);
+
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        tts.stop();
+                        Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                        startListening();
+                    }
+                }, 1800);  // 2000은 2초를 의미합니다.
+
+            }
+
+        }
+
+
+        @Override
+        public void onPartialResults(Bundle partialResults) {
+
+        }
+
+        @Override
+        public void onEvent(int eventType, Bundle params) {
+
+        }
+    };
 }
+
+
