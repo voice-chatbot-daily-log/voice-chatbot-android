@@ -6,16 +6,25 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.graphics.Color;
+import android.os.Handler;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.Voice;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +50,8 @@ import sm.finalproject.com.final_project_android.model.PostChatResponseData;
 import sm.finalproject.com.final_project_android.model.QueryInput;
 import sm.finalproject.com.final_project_android.model.QueryInputData;
 import sm.finalproject.com.final_project_android.networkService.NetworkService;
+import sm.finalproject.com.final_project_android.start.adapter.ChatAdapter;
+import sm.finalproject.com.final_project_android.start.data.ChatData;
 import sm.finalproject.com.final_project_android.util.ApplicationController;
 
 import static com.kakao.util.helper.Utility.getPackageInfo;
@@ -48,8 +59,6 @@ import static com.kakao.util.helper.Utility.getPackageInfo;
 public class VoiceChatActivty extends AppCompatActivity implements SpeechRecognizeListener,TextToSpeechListener {
 
     NetworkService networkService;
-    Button click;
-    TextView tv_result;
 
     //newtone API 사용////////
     private TextToSpeechClient ttsClient;
@@ -57,7 +66,19 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
     ///////////////////////////
     private static final int REQUEST_CODE_AUDIO_AND_WRITE_EXTERNAL_STORAGE = 0;
     final String auth_head = "Bearer ";
-    final String auth_body = "ya29.c.El8DB4KaE3s235z_qsnUIUoEKWYA62xJ6m8ER4Q7Bhf_i6yIp3jPIVUbKctTflR5wOjR0FizwCwluKQT-GC-91Kk9Is0_jwQ-z8q9zjMTNFxsRPC72xSWVn1zc_EvzaIKw";
+    final String auth_body = "ya29.c.El8JB-df6l00lMfi_OUATrQAH7G1wYWq1-wDm3sb0aePqKZTwVO5xBsad_oEiQJvqUt8mO0BKqOsUn_7RIHwHjb1c9Ll8qQhkyR_8Mj_m0ODzHF4hO2vyxRt6u0kzkAPAg";
+
+    Handler handler;
+
+    public String first_start_msg = "";
+
+    //리사이클러뷰
+    public RecyclerView chat_rcv;
+
+    public RecyclerView.LayoutManager mLayoutManager_chat;
+    public ArrayList<ChatData> chatData;
+    public ChatAdapter chatAdapter;
+    //리사이클러뷰
 
 
     private Context mContext;
@@ -69,8 +90,17 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
         setContentView(R.layout.activity_voice_chat);
 
         //ui 세팅
-        click = (Button)findViewById(R.id.click);
-        tv_result = findViewById(R.id.tv_result);
+
+        handler = new Handler();
+
+        mLayoutManager_chat = new LinearLayoutManager(this.getApplicationContext());
+        chat_rcv = findViewById(R.id.chat_rcv);
+        chat_rcv.setHasFixedSize(true);
+        chat_rcv.setLayoutManager(mLayoutManager_chat);
+
+        chatData = new ArrayList<>();
+
+        //chatData.add(new ChatData("첫시작",1));
         //
 
 
@@ -83,10 +113,6 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
         //통신 post 설정//
         networkService = ApplicationController.getInstance().getNetworkService();
         ///////////////
-
-
-
-
 
 // SDK 초기화
 
@@ -110,31 +136,9 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
 
 
-        click.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (PermissionUtils.checkAudioRecordPermission(VoiceChatActivty.this)) {
-                    //Speaking to Text 세팅////
-                    String serviceType = SpeechRecognizerClient.SERVICE_TYPE_WEB;
-                    ///////////////
-
-                    SpeechRecognizerClient.Builder builder = new SpeechRecognizerClient.Builder().setServiceType(serviceType);
-
-                    sttClient = builder.build();
-
-                    sttClient.setSpeechRecognizeListener(VoiceChatActivty.this);
-                    sttClient.startRecording(true);
-
-                    Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
-
-                    click.setEnabled(false);
-
-                }
 
 
-            }
-        });
+        postInputText(auth_head+auth_body,"첫시작");
 
 
         ////////동적 권한 부여 코드///////////
@@ -153,7 +157,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
 
 
-    }
+    }//onCreate() 끝
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -173,7 +177,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
     // 더 이상 쓰지 않는 경우에는 다음과 같이 해제
     public void onDestroy() {
         super.onDestroy();
-        //TextToSpeechManager.getInstance().finalizeLibrary();
+        TextToSpeechManager.getInstance().finalizeLibrary();
     }
 
 
@@ -216,7 +220,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
     @Override
     public void onResults(Bundle results) {
-
+        Toast.makeText(getApplicationContext(),"Dd", Toast.LENGTH_SHORT).show();
 
         final StringBuilder builder = new StringBuilder();
 
@@ -234,18 +238,22 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
         }
 
         final Activity activity = this;
-        runOnUiThread(new Runnable() {
+        runOnUiThread(new Runnable() {  //stt를 할때 받는곳 (사용자가 말하고 나서 텍스트로 보여주는것)
             @Override
             public void run() {
                 String inputText = texts.get(0);
                 if (activity.isFinishing()) return;
+                Log.d("확인3",String.valueOf(ttsClient.isPlaying()));
+               // tv_result.setText(inputText);
+                Toast.makeText(getApplicationContext(),inputText, Toast.LENGTH_SHORT).show();
 
-                tv_result.setText(inputText);
-                //Toast.makeText(getApplicationContext(),tv_result.getText().toString(), Toast.LENGTH_SHORT).show();
+
+
+                chatData.add(new ChatData(inputText,1));
+                chat_rcv.setAdapter(chatAdapter);
 
                 postInputText(auth_head+auth_body,inputText);
 
-                click.setEnabled(true);
             }
         });
 
@@ -269,13 +277,50 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
         postChatResponseCall.enqueue(new Callback<PostChatResponse>() {
             @Override
             public void onResponse(Call<PostChatResponse> call, Response<PostChatResponse> response) {
-                if(response.isSuccessful()){
-                    Toast.makeText(getApplicationContext(),response.body().queryResult.fulfillmentText,Toast.LENGTH_LONG).show();
-                    sttClient.stopRecording();//tts플레이 하기전에 stt 멈춰주기!!!!!!!!!!!
-                    ttsClient.play(response.body().queryResult.fulfillmentText);
-                }else{
+                if(response.isSuccessful()) { //사용자의 응답을 받고 DialogFlow가 응답을 나타내는 곳
+                    //Toast.makeText(getApplicationContext(),response.body().queryResult.fulfillmentText,Toast.LENGTH_LONG).show();
+                    first_start_msg = response.body().queryResult.fulfillmentText;
+                    if (first_start_msg.equals("안녕?")) {
+                        ttsClient.play(first_start_msg);
 
+                    } else {
+                        sttClient.stopRecording();//tts플레이 하기전에 stt 멈춰주기!!!!!!!!!!!
+                        ttsClient.play(response.body().queryResult.fulfillmentText);
+                    }
+
+                    chatData.add(new ChatData(response.body().queryResult.fulfillmentText, 0));
+                    chatAdapter = new ChatAdapter(chatData);
+                    chat_rcv.setAdapter(chatAdapter);
+
+                    Log.d("확인",String.valueOf(ttsClient.isPlaying()));
+                    if (PermissionUtils.checkAudioRecordPermission(VoiceChatActivty.this)) {
+                        String serviceType = SpeechRecognizerClient.SERVICE_TYPE_WEB;
+                        SpeechRecognizerClient.Builder builder = new SpeechRecognizerClient.Builder().setServiceType(serviceType);
+
+
+                        sttClient = builder.build();
+
+                        sttClient.setSpeechRecognizeListener(VoiceChatActivty.this);
+
+
+                        try {
+                            Thread.sleep(4000);
+                            ttsClient.stop();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        Log.d("확인2",String.valueOf(ttsClient.isPlaying()));
+
+
+                        sttClient.startRecording(false);
+
+
+                    }
                 }
+
+
+
             }
 
             @Override
@@ -303,6 +348,13 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
         } catch (NoSuchAlgorithmException e){
             e.printStackTrace();
         }
+
+
+    }
+
+    public void btnMethod(View v) {
+
+
 
     }
 
