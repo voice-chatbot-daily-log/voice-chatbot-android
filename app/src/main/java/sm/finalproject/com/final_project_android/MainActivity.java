@@ -15,6 +15,7 @@ import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -45,6 +46,7 @@ import sm.finalproject.com.final_project_android.networkService.NetworkService;
 import sm.finalproject.com.final_project_android.start.VoiceChatActivty;
 import sm.finalproject.com.final_project_android.util.ApplicationController;
 
+import static android.speech.SpeechRecognizer.ERROR_SPEECH_TIMEOUT;
 import static com.kakao.util.helper.Utility.getKeyHash;
 import static com.kakao.util.helper.Utility.getPackageInfo;
 
@@ -104,6 +106,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             mRecognizer.startListening(i);
         }
 
+
+
     }
 
     public RecognitionListener mSTTListener = new RecognitionListener() {
@@ -125,15 +129,70 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         @Override
         public void onBufferReceived(byte[] buffer) {
 
+
         }
 
         @Override
         public void onEndOfSpeech() {
 
+
         }
 
         @Override
         public void onError(int error) {
+            String message;
+
+            switch (error) {
+                case SpeechRecognizer.ERROR_AUDIO:
+                    message = "오디오 에러";
+                    break;
+                case SpeechRecognizer.ERROR_CLIENT:
+                    message = "클라이언트 에러";
+                    break;
+                case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
+                    message = "퍼미션 없음";
+                    break;
+                case SpeechRecognizer.ERROR_NETWORK:
+                    message = "네트워크 에러";
+                    break;
+                case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
+                    message = "네트웍 타임아웃";
+                    break;
+                case SpeechRecognizer.ERROR_NO_MATCH:
+                    String sttError1 = "다시 말해주세요.";
+                    tts.speak(sttError1, TextToSpeech.QUEUE_FLUSH, null);
+
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            tts.stop();
+                            Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                            startListening();
+                        }
+                    }, 1800);  // 2000은 2초를 의미합니다.
+                    break;
+                case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
+                    message = "RECOGNIZER가 바쁨";
+                    break;
+                case SpeechRecognizer.ERROR_SERVER:
+                    message = "서버가 이상함";
+                    break;
+                case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
+                    String sttError2 = "다시 말해주세요.";
+                    tts.speak(sttError2, TextToSpeech.QUEUE_FLUSH, null);
+
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            tts.stop();
+                            Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                            startListening();
+                        }
+                    }, 1800);  // 2000은 2초를 의미합니다.
+                    break;
+                default:
+                    message = "알 수 없는 오류임";
+                    break;
+            }
+
 
         }
 
@@ -142,13 +201,15 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             final ArrayList<String> texts = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 
             String inputText = texts.get(0);
-            Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
+
+            Log.d("넘어옴?", "ㅇㅇ");
 
             if (inputText.equals("시작")) {
                 Intent intent = new Intent(MainActivity.this, VoiceChatActivty.class);
                 startActivity(intent);
             }
-            
+
             else {
                 String sttError = "다시 말해주세요.";
                 tts.speak(sttError, TextToSpeech.QUEUE_FLUSH, null);
