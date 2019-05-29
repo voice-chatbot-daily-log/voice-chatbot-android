@@ -3,6 +3,7 @@ package sm.finalproject.com.final_project_android.start;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -66,7 +67,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
     ///////////////////////////
     private static final int REQUEST_CODE_AUDIO_AND_WRITE_EXTERNAL_STORAGE = 0;
     final String auth_head = "Bearer ";
-    final String auth_body = "ya29.c.El8JB-df6l00lMfi_OUATrQAH7G1wYWq1-wDm3sb0aePqKZTwVO5xBsad_oEiQJvqUt8mO0BKqOsUn_7RIHwHjb1c9Ll8qQhkyR_8Mj_m0ODzHF4hO2vyxRt6u0kzkAPAg";
+    final String auth_body = "ya29.c.El8YBzIpa0C_Q1Q-RJTsl6MotVpzxxpvXMdBtm-mRXlZ1v-ElBMCZqJ9_DDIeM0aY7rx5J0GnKVR1rx1sNPfCtj_NYhyzXVs8QfpQQ1sZGaQaT0b4FizohF3IBEeDvuCkQ";
 
     Handler handler;
 
@@ -82,6 +83,8 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
 
     private Context mContext;
+
+    public int menu_flag=0;
 
 
     @Override
@@ -211,6 +214,78 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
     @Override
     public void onError(int code, String message) {
         // handleError(code);
+        switch (code) {
+
+            case SpeechRecognizerClient.ERROR_AUDIO_FAIL:
+                message = "음성입력이 불가능하거나 마이크 접근이 허용되지 않았을 경우.";
+                break;
+            case SpeechRecognizerClient.ERROR_AUTH_FAIL:
+                message = "apikey 인증이 실패한 경우";
+                break;
+            case SpeechRecognizerClient.ERROR_NETWORK_FAIL:
+                message = "네트워크 오류가 발생한 경우";
+                break;
+            case SpeechRecognizerClient.ERROR_NETWORK_TIMEOUT:
+                message = "네트워크 타임아웃이 발생한 경우.";
+                break;
+            case SpeechRecognizerClient.ERROR_SERVER_FAIL:
+                message = "서버에서 오류가 발생한 경우.";
+                break;
+            case SpeechRecognizerClient.ERROR_SERVER_TIMEOUT:
+                message ="서버 응답 시간이 초과한 경우";
+                String sttError1 = "다시 말해주세요.";
+                ttsClient.play(sttError1);
+
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        ttsClient.stop();
+                        Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                        sttClient.startRecording(false);
+                    }
+                }, 1800);  // 2000은 2초를 의미합니다.
+                break;
+            case SpeechRecognizerClient.ERROR_NO_RESULT:
+                message = "인식된 결과 목록이 없는 경우";
+                String sttError3 = "다시 말해주세요.";
+                ttsClient.play(sttError3);
+
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        ttsClient.stop();
+                        sttClient.startRecording(false);
+                    }
+                }, 1800);  // 2000은 2초를 의미합니다.
+
+                break;
+            case SpeechRecognizerClient.ERROR_CLIENT:
+                message = "클라이언트 내부 로직에서 오류가 발생한 경우";
+                break;
+            case SpeechRecognizerClient.ERROR_RECOGNITION_TIMEOUT:
+                String sttError2 = "다시 말해주세요.";
+                ttsClient.play(sttError2);
+
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        ttsClient.stop();
+                        sttClient.startRecording(false);
+                    }
+                }, 1800);  // 2000은 2초를 의미합니다.
+                break;
+            case SpeechRecognizerClient.ERROR_SERVER_UNSUPPORT_SERVICE:
+                message = "전체 소요시간에 대한 타임아웃이 발생한 경우.";
+                break;
+            case SpeechRecognizerClient.ERROR_SERVER_USERDICT_EMPTY:
+                message = "제공하지 않는 서비스 타입이 지정됐을 경우";
+                break;
+            case SpeechRecognizerClient.ERROR_SERVER_ALLOWED_REQUESTS_EXCESS:
+                message = "입력된 사용자 사전에 내용이 없는 경우";
+                break;
+            default:
+                message = "알 수 없는 오류임";
+                break;
+
+        }
+        Log.e("에러낫냐",message);
     }
 
     @Override
@@ -247,15 +322,32 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                // tv_result.setText(inputText);
                 Toast.makeText(getApplicationContext(),inputText, Toast.LENGTH_SHORT).show();
 
+                if(inputText.equals("수정아")){
+                    menu_flag=1;
 
+                    chatData.add(new ChatData(inputText, 1));
+                    chat_rcv.setAdapter(chatAdapter);
 
-                chatData.add(new ChatData(inputText,1));
-                chat_rcv.setAdapter(chatAdapter);
+                    postInputText(auth_head + auth_body, inputText);
+                }
 
-                postInputText(auth_head+auth_body,inputText);
+                if(menu_flag==1){
+                    if (inputText.equals("대화 끝내기")) {
+                        Intent intent = new Intent(VoiceChatActivty.this, MainActivity.class);
+                        startActivity(intent);
+                        menu_flag=0;
+                    }
+                }
+                else {
+                    chatData.add(new ChatData(inputText, 1));
+                    chat_rcv.setAdapter(chatAdapter);
 
+                    postInputText(auth_head + auth_body, inputText);
+                }
             }
         });
+
+
 
     }
 
@@ -303,12 +395,12 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                         sttClient.setSpeechRecognizeListener(VoiceChatActivty.this);
 
 
-                        try {
-                            Thread.sleep(4000);
-                            ttsClient.stop();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            Thread.sleep(4000);
+//                            ttsClient.stop();
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
 
                         Log.d("확인2",String.valueOf(ttsClient.isPlaying()));
 
