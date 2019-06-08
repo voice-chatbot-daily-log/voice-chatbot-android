@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     Intent i;
     SpeechRecognizer mRecognizer;
     Button btn_start;
+    Button btn_record;
     Handler handler;
 
     TextToSpeech tts;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         setContentView(R.layout.activity_main);
 
         btn_start = findViewById(R.id.btn_start);
+        btn_record = findViewById(R.id.btn_record);
         handler = new Handler();
 
         tts = new TextToSpeech(this, this);
@@ -75,6 +77,14 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 startListening();
             }
         }, 3000);  // 2000은 2초를 의미합니다.
+
+        btn_start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,VoiceChatActivty.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
