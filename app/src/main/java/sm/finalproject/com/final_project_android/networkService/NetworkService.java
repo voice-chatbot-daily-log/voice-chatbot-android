@@ -10,6 +10,7 @@ import retrofit2.http.Path;
 import sm.finalproject.com.final_project_android.lastdiary.data.LastDiaryData;
 import sm.finalproject.com.final_project_android.model.GetLastDiaryResponse;
 import sm.finalproject.com.final_project_android.model.PostChatResponse;
+import sm.finalproject.com.final_project_android.model.PostChatResponseData;
 import sm.finalproject.com.final_project_android.model.QueryInput;
 
 public interface NetworkService {
@@ -21,7 +22,9 @@ public interface NetworkService {
     @GET("/diary/lastdiary/{userIdx}")
     Call<GetLastDiaryResponse>getLastDiary(@Path("userIdx") int userIdx);
 
+    @POST("/diary/save")
+    Call<PostChatResponse>postLastDiary(@Body PostChatResponseData postChatResponseData);
 
 
-
+    
 }
