@@ -67,7 +67,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
     ///////////////////////////
     private static final int REQUEST_CODE_AUDIO_AND_WRITE_EXTERNAL_STORAGE = 0;
     final String auth_head = "Bearer ";
-    final String auth_body = "ya29.c.El8YBzIpa0C_Q1Q-RJTsl6MotVpzxxpvXMdBtm-mRXlZ1v-ElBMCZqJ9_DDIeM0aY7rx5J0GnKVR1rx1sNPfCtj_NYhyzXVs8QfpQQ1sZGaQaT0b4FizohF3IBEeDvuCkQ";
+    final String auth_body = "ya29.c.El9mB1TOFpw8EjCnFHo5GD6ee4Gx5ih8Ion4gxGdVdPvLAW2X8D_eWwQtushAo4qK9w5oDdIDLrCCFYwjdVaIonHGYnjs2JBffgaateAg7BoME6HIjm5xxQJZXBUGI3k7w";
 
     Handler handler;
 
@@ -85,6 +85,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
     private Context mContext;
 
     public int menu_flag=0;
+    public int save_flag=0;
 
 
     @Override
@@ -187,12 +188,12 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
     @Override
     public void onFinished() {
 
-        int intSentSize = ttsClient.getSentDataSize();      //세션 중에 전송한 데이터 사이즈
-        int intRecvSize = ttsClient.getReceivedDataSize();  //세션 중에 전송받은 데이터 사이즈
-
-        final String strInacctiveText = "handleFinished() SentSize : " + intSentSize + "  RecvSize : " + intRecvSize;
-
-        Log.i("ㅇ", strInacctiveText);
+//        int intSentSize = ttsClient.getSentDataSize();      //세션 중에 전송한 데이터 사이즈
+//        int intRecvSize = ttsClient.getReceivedDataSize();  //세션 중에 전송받은 데이터 사이즈
+//
+//        final String strInacctiveText = "handleFinished() SentSize : " + intSentSize + "  RecvSize : " + intRecvSize;
+//
+//        Log.i("ㅇ", strInacctiveText);
 
     }
 
@@ -285,7 +286,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                 break;
 
         }
-        Log.e("에러낫냐",message);
+        Log.e("에러",message);
     }
 
     @Override
@@ -320,9 +321,9 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                 if (activity.isFinishing()) return;
                 Log.d("확인3",String.valueOf(ttsClient.isPlaying()));
                // tv_result.setText(inputText);
-                Toast.makeText(getApplicationContext(),inputText, Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getApplicationContext(),inputText, Toast.LENGTH_SHORT).show();
 
-                if(inputText.equals("수정아")){
+                if(inputText.equals("송이야")){
                     menu_flag=1;
 
                     chatData.add(new ChatData(inputText, 1));
@@ -331,18 +332,87 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                     postInputText(auth_head + auth_body, inputText);
                 }
 
-                if(menu_flag==1){
+                if(menu_flag==1) {
                     if (inputText.equals("대화 끝내기")) {
                         Intent intent = new Intent(VoiceChatActivty.this, MainActivity.class);
                         startActivity(intent);
                         menu_flag=0;
                     }
-                }
-                else {
-                    chatData.add(new ChatData(inputText, 1));
-                    chat_rcv.setAdapter(chatAdapter);
 
-                    postInputText(auth_head + auth_body, inputText);
+                    else if (inputText.equals("지난 일기 보기") || inputText.equals("지난1기") || inputText.equals("지난 일기") || inputText.equals("지난 1기")) {
+                        //Toast.makeText(getApplicationContext(), "지난 일기 보기", Toast.LENGTH_SHORT).show();
+                        sttClient.stopRecording();
+
+                        String q_save = "저장하시겠습니까? 네 또는 아니요 라고 말해주세요.";
+                        Toast.makeText(getApplicationContext(), q_save, Toast.LENGTH_SHORT).show();
+
+                        ttsClient.play(q_save);
+                        save_flag = 1;
+
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                                ttsClient.stop();
+                                sttClient.startRecording(false);
+                            }
+                        }, 5000);  // 2000은 2초를 의미합니다.
+
+                        menu_flag=0;
+
+
+                    }
+
+                    else if(inputText.equals("저장하기")) {
+                        //저장하는 코드 삽입
+
+                        Toast.makeText(getApplicationContext(), "저장ㅇㄹ", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(VoiceChatActivty.this, MainActivity.class);
+                        startActivity(intent);
+                        menu_flag = 0;
+                    }
+
+                    else{
+                        Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
+//                        handler.postDelayed(new Runnable() {
+//                            public void run() {
+//                                ttsClient.play("다시 말씀해주세요.");
+//                            }
+//                        }, 15000);  // 2000은 2초를 의미합니다.
+
+
+//                        handler.postDelayed(new Runnable() {
+//                            public void run() {
+//                                ttsClient.stop();
+//                                sttClient.startRecording(false);
+//                            }
+//                        }, 3000);  // 2000은 2초를 의미합니다.
+
+                        menu_flag =1;
+
+                      // sttClient.startRecording(false);
+                    }
+
+                }
+
+                else {
+                    if(save_flag==1){
+                        if(inputText.equals("네")) {
+                            //menu_flag = 0;
+                            Intent intent = new Intent(VoiceChatActivty.this, MainActivity.class);
+                            startActivity(intent);
+                            Toast.makeText(getApplicationContext(), "저장ㅇㄹ", Toast.LENGTH_SHORT).show();
+
+                            //저장하는 코드 삽입해야함
+                        }
+                        else if(inputText.equals("아니요")){
+                            Toast.makeText(getApplicationContext(), "저장안함", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    else {
+                        chatData.add(new ChatData(inputText, 1));
+                        chat_rcv.setAdapter(chatAdapter);
+
+                        postInputText(auth_head + auth_body, inputText);
+                    }
                 }
             }
         });
