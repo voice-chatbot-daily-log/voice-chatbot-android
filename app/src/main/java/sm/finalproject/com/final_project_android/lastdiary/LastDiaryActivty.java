@@ -1,5 +1,8 @@
 package sm.finalproject.com.final_project_android.lastdiary;
 
+import android.content.Intent;
+import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +17,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import sm.finalproject.com.final_project_android.MainActivity;
 import sm.finalproject.com.final_project_android.R;
 import sm.finalproject.com.final_project_android.lastdiary.adapter.LastDiaryAdapter;
 import sm.finalproject.com.final_project_android.lastdiary.data.LastDiaryData;
@@ -58,7 +62,7 @@ public class LastDiaryActivty extends AppCompatActivity {
         last_diary_rcv.setHasFixedSize(true);
         last_diary_rcv.setLayoutManager(mLayoutManager_lastDiary);
 
-        lastDiaryData = new ArrayList<>();
+        //lastDiaryData = new ArrayList<>();
         getLastDiary();
 
 
@@ -91,6 +95,12 @@ public class LastDiaryActivty extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
-
+        Intent intent = new Intent(LastDiaryActivty.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }
