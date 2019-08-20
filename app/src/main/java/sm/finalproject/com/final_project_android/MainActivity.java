@@ -221,8 +221,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             }
 
             else {
-                String sttError = "다시 말해주세요.";
-                tts.speak(sttError, TextToSpeech.QUEUE_FLUSH, null);
 
                 handler.postDelayed(new Runnable() {
                     public void run() {
