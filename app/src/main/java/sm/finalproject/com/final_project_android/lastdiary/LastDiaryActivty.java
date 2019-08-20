@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -69,12 +70,15 @@ public class LastDiaryActivty extends AppCompatActivity {
             @Override
             public void onResponse(Call<GetLastDiaryResponse> call, Response<GetLastDiaryResponse> response) {
                 if(response.isSuccessful()){
-                    lastDiaryData = new ArrayList<>();
-                    lastDiaryData = response.body().data;
 
+                    lastDiaryData = response.body().data;
                     lastDiaryAdapter = new LastDiaryAdapter(lastDiaryData);
 
                     last_diary_rcv.setAdapter(lastDiaryAdapter);
+
+                }
+                else{
+
 
                 }
 
