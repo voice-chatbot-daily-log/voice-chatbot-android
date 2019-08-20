@@ -19,12 +19,12 @@ public interface NetworkService {
     Call<PostChatResponse>postChat(@Header("Authorization") String header,
                                    @Body QueryInput queryInput);
 
-    @GET("/diary/lastdiary/{userIdx}")
+    @GET("/diary/lastdiarylist/{userIdx}")
     Call<GetLastDiaryResponse>getLastDiary(@Path("userIdx") int userIdx);
 
     @POST("/diary/save")
     Call<PostChatResponse>postLastDiary(@Body PostChatResponseData postChatResponseData);
 
 
-    
+
 }
