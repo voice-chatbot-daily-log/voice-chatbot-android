@@ -4,14 +4,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import sm.finalproject.com.final_project_android.R;
 import sm.finalproject.com.final_project_android.lastdiary.adapter.LastDiaryAdapter;
 import sm.finalproject.com.final_project_android.lastdiary.data.LastDiaryData;
+import sm.finalproject.com.final_project_android.model.GetLastDiaryResponse;
 import sm.finalproject.com.final_project_android.networkService.NetworkService;
 
 public class LastDiaryActivty extends AppCompatActivity {
@@ -39,7 +44,7 @@ public class LastDiaryActivty extends AppCompatActivity {
         builder = new Retrofit.Builder();
 
         lastDiaryNetwork = builder
-                .baseUrl("https://13.209.245.84:3000/")
+                .baseUrl("http://13.209.245.84:3000/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -53,9 +58,35 @@ public class LastDiaryActivty extends AppCompatActivity {
         last_diary_rcv.setLayoutManager(mLayoutManager_lastDiary);
 
         lastDiaryData = new ArrayList<>();
+        getLastDiary();
 
 
     }
+
+    public void getLastDiary(){
+        final Call<GetLastDiaryResponse> getLastDiaryResponseCall = networkService.getLastDiary(1);
+        getLastDiaryResponseCall.enqueue(new Callback<GetLastDiaryResponse>() {
+            @Override
+            public void onResponse(Call<GetLastDiaryResponse> call, Response<GetLastDiaryResponse> response) {
+                if(response.isSuccessful()){
+                    lastDiaryData = new ArrayList<>();
+                    lastDiaryData = response.body().data;
+
+                    lastDiaryAdapter = new LastDiaryAdapter(lastDiaryData);
+
+                    last_diary_rcv.setAdapter(lastDiaryAdapter);
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<GetLastDiaryResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
 
 
 }
