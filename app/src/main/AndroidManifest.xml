@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="sm.finalproject.com.final_project_android">
-
     <!-- 권한 설정 -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-    <!-- 동적 권한 부여 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 동적 권한 부여 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -19,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".lastdiary.LastDiaryActivty"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,8 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".start.VoiceChatActivty" />
 
-        <activity android:name=".start.VoiceChatActivty"></activity>
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="100b5e2db9932bc90f4c3dde99f5a0e2" />
