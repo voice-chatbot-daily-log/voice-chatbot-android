@@ -38,6 +38,8 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import sm.finalproject.com.final_project_android.lastdiary.LastDiaryActivty;
+import sm.finalproject.com.final_project_android.lastdiary.adapter.LastDiaryAdapter;
 import sm.finalproject.com.final_project_android.model.PostChatResponse;
 import sm.finalproject.com.final_project_android.model.PostChatResponseData;
 import sm.finalproject.com.final_project_android.model.QueryInput;
@@ -82,6 +84,14 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,VoiceChatActivty.class);
+                startActivity(intent);
+            }
+        });
+
+        btn_record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, LastDiaryActivty.class);
                 startActivity(intent);
             }
         });
