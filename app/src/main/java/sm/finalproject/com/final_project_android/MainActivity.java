@@ -93,6 +93,13 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, LastDiaryActivty.class);
                 startActivity(intent);
+                try {
+                    tts.stop();
+                    mRecognizer.cancel();
+                }catch (Exception e){
+                    Log.e("에러",e.getMessage());
+                    mRecognizer.cancel();
+                }
             }
         });
 
@@ -227,6 +234,11 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
             if (inputText.equals("시작")) {
                 Intent intent = new Intent(MainActivity.this, VoiceChatActivty.class);
+                startActivity(intent);
+            }
+
+            else if(inputText.equals("지난 일기")) {
+                Intent intent = new Intent(MainActivity.this, LastDiaryActivty.class);
                 startActivity(intent);
             }
 

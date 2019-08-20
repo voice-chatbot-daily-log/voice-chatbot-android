@@ -57,7 +57,7 @@ public class LastDiaryActivty extends AppCompatActivity {
         last_diary_rcv.setHasFixedSize(true);
         last_diary_rcv.setLayoutManager(mLayoutManager_lastDiary);
 
-        lastDiaryData = new ArrayList<>();
+        //lastDiaryData = new ArrayList<>();
         getLastDiary();
 
 
