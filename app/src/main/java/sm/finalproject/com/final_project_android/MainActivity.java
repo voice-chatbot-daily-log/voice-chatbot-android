@@ -49,6 +49,7 @@ import sm.finalproject.com.final_project_android.start.VoiceChatActivty;
 import sm.finalproject.com.final_project_android.util.ApplicationController;
 
 import static android.speech.SpeechRecognizer.ERROR_SPEECH_TIMEOUT;
+import static android.speech.SpeechRecognizer.isRecognitionAvailable;
 import static com.kakao.util.helper.Utility.getKeyHash;
 import static com.kakao.util.helper.Utility.getPackageInfo;
 
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,VoiceChatActivty.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -93,13 +95,16 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, LastDiaryActivty.class);
                 startActivity(intent);
-                try {
-                    tts.stop();
-                    mRecognizer.cancel();
-                }catch (Exception e){
-                    Log.e("에러",e.getMessage());
-                    mRecognizer.cancel();
-                }
+
+//                try {
+//                    tts.stop();
+//                    mRecognizer.cancel();
+//                }catch (Exception e){
+//                    Log.e("에러",e.getMessage());
+//                  //  mRecognizer.cancel();
+//                }
+
+                finish();
             }
         });
 
@@ -127,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
         mRecognizer = SpeechRecognizer.createSpeechRecognizer(MainActivity.this);
         Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+
 
         if (PermissionUtils.checkAudioRecordPermission(MainActivity.this)) {
             mRecognizer.setRecognitionListener(mSTTListener);
@@ -266,7 +272,10 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         public void onEvent(int eventType, Bundle params) {
 
         }
+
+
     };
+
 }
 
 

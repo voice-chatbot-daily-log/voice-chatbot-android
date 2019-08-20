@@ -46,6 +46,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import sm.finalproject.com.final_project_android.MainActivity;
 import sm.finalproject.com.final_project_android.R;
+import sm.finalproject.com.final_project_android.lastdiary.LastDiaryActivty;
 import sm.finalproject.com.final_project_android.model.PostChatResponse;
 import sm.finalproject.com.final_project_android.model.PostChatResponseData;
 import sm.finalproject.com.final_project_android.model.QueryInput;
@@ -518,6 +519,15 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        Intent intent = new Intent(VoiceChatActivty.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 }
