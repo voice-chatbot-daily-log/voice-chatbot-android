@@ -1,6 +1,9 @@
 package sm.finalproject.com.final_project_android.lastdiary;
 
 import android.content.Intent;
+import android.os.Handler;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +12,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.kakao.sdk.newtoneapi.impl.util.PermissionUtils;
 
 import java.util.ArrayList;
 
@@ -23,8 +30,9 @@ import sm.finalproject.com.final_project_android.lastdiary.adapter.LastDiaryAdap
 import sm.finalproject.com.final_project_android.lastdiary.data.LastDiaryData;
 import sm.finalproject.com.final_project_android.model.GetLastDiaryResponse;
 import sm.finalproject.com.final_project_android.networkService.NetworkService;
+import sm.finalproject.com.final_project_android.start.VoiceChatActivty;
 
-public class LastDiaryActivty extends AppCompatActivity {
+public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.OnInitListener{
 
     //리사이클러뷰
     RecyclerView last_diary_rcv;
@@ -32,6 +40,15 @@ public class LastDiaryActivty extends AppCompatActivity {
     public ArrayList<LastDiaryData> lastDiaryData;
     public LastDiaryAdapter lastDiaryAdapter;
     //
+
+    Button btn_search_date;
+    Button btn_search_tag;
+    Button btn_search_all;
+
+    TextToSpeech textToSpeech;
+    SpeechRecognizer speechRecognizer;
+
+    Handler handler;
 
     //통신//
     Retrofit.Builder builder;
@@ -44,6 +61,19 @@ public class LastDiaryActivty extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_last_diary_activty);
+
+        btn_search_date=findViewById(R.id.btn_search_date);
+        btn_search_tag=findViewById(R.id.btn_search_tag);
+        btn_search_all=findViewById(R.id.btn_search_all);
+
+        textToSpeech = new TextToSpeech(this, this);
+
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                textToSpeech.stop();
+                startListening();
+            }
+        }, 10000);  // 2000은 2초를 의미합니다.
 
         //통신//
         builder = new Retrofit.Builder();
@@ -62,9 +92,12 @@ public class LastDiaryActivty extends AppCompatActivity {
         last_diary_rcv.setHasFixedSize(true);
         last_diary_rcv.setLayoutManager(mLayoutManager_lastDiary);
 
-        //lastDiaryData = new ArrayList<>();
-        getLastDiary();
-
+        btn_search_all.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getLastDiary();
+            }
+        });
 
     }
 
@@ -79,13 +112,7 @@ public class LastDiaryActivty extends AppCompatActivity {
                     lastDiaryAdapter = new LastDiaryAdapter(lastDiaryData);
 
                     last_diary_rcv.setAdapter(lastDiaryAdapter);
-
                 }
-                else{
-
-
-                }
-
             }
 
             @Override
@@ -94,6 +121,158 @@ public class LastDiaryActivty extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onInit(int status) {
+        Log.d("메뉴", "ㅇㅋ");
+        String selectText = "날짜로 검색하시려면 날짜, 태그로 검색하시려면 태그, 전체를 보시려면 전체라고 말해주세요";
+        textToSpeech.speak(selectText, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //tts.shutdown();
+
+    }
+
+    private void startListening() {
+
+        Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);;
+        i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
+        i.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
+
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(LastDiaryActivty.this);
+        Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+
+        if (PermissionUtils.checkAudioRecordPermission(LastDiaryActivty.this)) {
+            speechRecognizer.setRecognitionListener(speechToTextListener);
+            speechRecognizer.startListening(i);
+        }
+    }
+
+    public RecognitionListener speechToTextListener = new RecognitionListener() {
+        @Override
+        public void onReadyForSpeech(Bundle params) {
+
+        }
+
+        @Override
+        public void onBeginningOfSpeech() {
+
+        }
+
+        @Override
+        public void onRmsChanged(float rmsdB) {
+
+        }
+
+        @Override
+        public void onBufferReceived(byte[] buffer) {
+
+        }
+
+        @Override
+        public void onEndOfSpeech() {
+
+        }
+
+        @Override
+        public void onError(int error) {
+            String message;
+
+            switch (error) {
+                case SpeechRecognizer.ERROR_AUDIO:
+                    message = "오디오 에러";
+                    break;
+                case SpeechRecognizer.ERROR_CLIENT:
+                    message = "클라이언트 에러";
+                    break;
+                case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
+                    message = "퍼미션 없음";
+                    break;
+                case SpeechRecognizer.ERROR_NETWORK:
+                    message = "네트워크 에러";
+                    break;
+                case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
+                    message = "네트웍 타임아웃";
+                    break;
+                case SpeechRecognizer.ERROR_NO_MATCH:
+                    String sttError1 = "다시 말해주세요.";
+                    textToSpeech.speak(sttError1, TextToSpeech.QUEUE_FLUSH, null);
+
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            textToSpeech.stop();
+                            Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                            startListening();
+                        }
+                    }, 1800);  // 2000은 2초를 의미합니다.
+                    break;
+                case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
+                    message = "RECOGNIZER가 바쁨";
+                    break;
+                case SpeechRecognizer.ERROR_SERVER:
+                    message = "서버가 이상함";
+                    break;
+                case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
+                    String sttError2 = "다시 말해주세요.";
+                    textToSpeech.speak(sttError2, TextToSpeech.QUEUE_FLUSH, null);
+
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            textToSpeech.stop();
+                            Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                            startListening();
+                        }
+                    }, 1800);  // 2000은 2초를 의미합니다.
+                    break;
+                default:
+                    message = "알 수 없는 오류임";
+                    break;
+            }
+
+        }
+
+        @Override
+        public void onResults(Bundle results) {
+            final ArrayList<String> texts = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+
+            String inputText = texts.get(0);
+            Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
+
+            if (inputText.equals("날짜")) {
+                Toast.makeText(getApplicationContext(), "날짜로 검색", Toast.LENGTH_SHORT).show();
+            }
+
+            else if(inputText.equals("태그")) {
+                Toast.makeText(getApplicationContext(), "태그로 검색", Toast.LENGTH_SHORT).show();
+            }
+
+            else {
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        textToSpeech.stop();
+                        Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                        startListening();
+                    }
+                }, 1800);  // 2000은 2초를 의미합니다.
+
+            }
+
+        }
+
+        @Override
+        public void onPartialResults(Bundle partialResults) {
+
+        }
+
+        @Override
+        public void onEvent(int eventType, Bundle params) {
+
+        }
+
+    };
 
     @Override
     public void onBackPressed() {
