@@ -84,7 +84,9 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                 .build();
 
         networkService = lastDiaryNetwork.create(NetworkService.class);
-        //
+        //////
+
+
 
 
         last_diary_rcv = findViewById(R.id.last_diary_rcv);
@@ -92,12 +94,17 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
         last_diary_rcv.setHasFixedSize(true);
         last_diary_rcv.setLayoutManager(mLayoutManager_lastDiary);
 
+<<<<<<< HEAD
         btn_search_all.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getLastDiary();
             }
         });
+=======
+        lastDiaryData = new ArrayList<>();
+        getLastDiary();
+>>>>>>> 91c7a396feeba8ae18d3c66ec143a2225af11a86
 
     }
 
