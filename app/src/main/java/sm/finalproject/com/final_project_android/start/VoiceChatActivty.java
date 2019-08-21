@@ -39,16 +39,23 @@ import com.kakao.sdk.newtoneapi.impl.util.PermissionUtils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import sm.finalproject.com.final_project_android.MainActivity;
 import sm.finalproject.com.final_project_android.R;
 import sm.finalproject.com.final_project_android.lastdiary.LastDiaryActivty;
+import sm.finalproject.com.final_project_android.model.GetLastDiaryResponse;
 import sm.finalproject.com.final_project_android.model.PostChatResponse;
 import sm.finalproject.com.final_project_android.model.PostChatResponseData;
+import sm.finalproject.com.final_project_android.model.PostLastDiaryResponse;
+import sm.finalproject.com.final_project_android.model.PostLastDiaryResponseData;
 import sm.finalproject.com.final_project_android.model.QueryInput;
 import sm.finalproject.com.final_project_android.model.QueryInputData;
 import sm.finalproject.com.final_project_android.networkService.NetworkService;
@@ -61,15 +68,23 @@ import static com.kakao.util.helper.Utility.getPackageInfo;
 
 public class VoiceChatActivty extends AppCompatActivity implements SpeechRecognizeListener,TextToSpeechListener {
 
+    String dialogContext ;
+
     NetworkService networkService;
 
     //newtone API 사용////////
     private TextToSpeechClient ttsClient;
     private SpeechRecognizerClient sttClient;
     ///////////////////////////
+
+    //통신//
+    Retrofit.Builder builder;
+    Retrofit saveDiaryNetwork;
+    //
+
     private static final int REQUEST_CODE_AUDIO_AND_WRITE_EXTERNAL_STORAGE = 0;
     final String auth_head = "Bearer ";
-    final String auth_body = "ya29.c.El9mB1TOFpw8EjCnFHo5GD6ee4Gx5ih8Ion4gxGdVdPvLAW2X8D_eWwQtushAo4qK9w5oDdIDLrCCFYwjdVaIonHGYnjs2JBffgaateAg7BoME6HIjm5xxQJZXBUGI3k7w";
+    final String auth_body = "ya29.c.El9rB7Oh8FdbG4tl4qrYG-Qw1IWLCqKBkFqznRG4HISO5l5w8NiLrJ4bwJTIoUCTjBje-MOVgan3Dt3oW59RG0YRsKKb7bixpcuDgZ9wKH2qDr2Ok1wmS12SPk_Z9OeiDQ";
 
     Handler handler;
 
@@ -112,7 +127,20 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
         saveDialog = new SaveDialog(this);
 
         //chatData.add(new ChatData("첫시작",1));
-        //
+
+
+        //수정's server 통신설정//
+        builder = new Retrofit.Builder();
+
+        saveDiaryNetwork = builder
+                .baseUrl("http://13.209.245.84:3000/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        //////
+
+        //다음 open api 통신 설정//
+        networkService = ApplicationController.getInstance().getNetworkService();
+        ///////////////
 
 
         /////////hash key 받는곳//////////
@@ -120,10 +148,9 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
         getHashKey();
         ////////////////////////////////
 
+        dialogContext = " "; //대화 전체를 받아올 변수
 
-        //통신 post 설정//
-        networkService = ApplicationController.getInstance().getNetworkService();
-        ///////////////
+
 
 // SDK 초기화
 
@@ -336,6 +363,8 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                     chatData.add(new ChatData(inputText, 1));
                     chat_rcv.setAdapter(chatAdapter);
 
+                    dialogContext += "나 : "+ inputText + "<br/>";
+
                     postInputText(auth_head + auth_body, inputText);
                 }
 
@@ -437,8 +466,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                             menu_flag = 0;
                             save_flag = -1;
 
-                            //Intent intent = new Intent(VoiceChatActivty.this, MainActivity.class);
-                            //startActivity(intent);
+
                             //Toast.makeText(getApplicationContext(), "저장ㅇㄹ", Toast.LENGTH_SHORT).show();
 
                             //저장하는 코드 삽입해야함
@@ -450,10 +478,15 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                     else if(save_flag == -1){ //해쉬태그 입력
                         hashTag = inputText;
                         saveDialog.setEditText(hashTag);
-                        Toast.makeText(getApplicationContext(), "해쉬태그 : "+ hashTag, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "해쉬태그 : "+ hashTag, Toast.LENGTH_SHORT).show();
+                        //저장하기
+
+                        postSaveLastDiary(1,dialogContext,hashTag);
 
                     }
-                    else {
+                    else { //그냥 대화를 할때 들어가는 곳
+
+                        dialogContext += "나 : " + inputText + "<br/>";
                         chatData.add(new ChatData(inputText, 1));
                         chat_rcv.setAdapter(chatAdapter);
 
@@ -489,10 +522,12 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                     //Toast.makeText(getApplicationContext(),response.body().queryResult.fulfillmentText,Toast.LENGTH_LONG).show();
                     first_start_msg = response.body().queryResult.fulfillmentText;
                     if (first_start_msg.equals("안녕?")) {
+                        dialogContext += "챗봇 : "+first_start_msg + "<br/>";
                         ttsClient.play(first_start_msg);
 
                     } else {
-                        sttClient.stopRecording();//tts플레이 하기전에 stt 멈춰주기!!!!!!!!!!!
+                        sttClient.stopRecording(); //tts플레이 하기전에 stt 멈춰주기!!!!!!!!!!!
+                        dialogContext += "챗봇 : "+response.body().queryResult.fulfillmentText +"<br/>";
                         ttsClient.play(response.body().queryResult.fulfillmentText);
                     }
 
@@ -573,6 +608,45 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
         Intent intent = new Intent(VoiceChatActivty.this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    public void postSaveLastDiary(int userIdx,String content,String hashTag){
+
+        //날짜구하기
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MM월 dd일");
+        String realDate = dateFormat.format(date);
+
+
+        PostLastDiaryResponseData postLastDiaryResponseData = new PostLastDiaryResponseData(userIdx,content,realDate,hashTag);
+
+        networkService = saveDiaryNetwork.create(NetworkService.class);
+
+        final Call<PostLastDiaryResponse> postLastDiaryResponseCall = networkService.postLastDiary(postLastDiaryResponseData);
+        postLastDiaryResponseCall.enqueue(new Callback<PostLastDiaryResponse>() {
+            @Override
+            public void onResponse(Call<PostLastDiaryResponse> call, Response<PostLastDiaryResponse> response) {
+                if(response.isSuccessful()){
+
+                    Toast.makeText(getApplicationContext(), "!!저장성공!!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(VoiceChatActivty.this, MainActivity.class);
+                    startActivity(intent);
+
+
+                }else{
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostLastDiaryResponse> call, Throwable t) {
+
+            }
+        });
+
+
+
     }
 
 }
