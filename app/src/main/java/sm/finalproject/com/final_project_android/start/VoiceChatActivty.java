@@ -54,6 +54,7 @@ import sm.finalproject.com.final_project_android.model.QueryInputData;
 import sm.finalproject.com.final_project_android.networkService.NetworkService;
 import sm.finalproject.com.final_project_android.start.adapter.ChatAdapter;
 import sm.finalproject.com.final_project_android.start.data.ChatData;
+import sm.finalproject.com.final_project_android.start.dialog.SaveDialog;
 import sm.finalproject.com.final_project_android.util.ApplicationController;
 
 import static com.kakao.util.helper.Utility.getPackageInfo;
@@ -82,7 +83,11 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
     public ChatAdapter chatAdapter;
     //리사이클러뷰
 
-    public String hashTag = "";
+    public String hashTag = ""; //저장할때 해쉬태그 담을 변수
+
+    //저장 다이얼로그
+    public SaveDialog saveDialog;
+
 
     public int menu_flag=0;
     public int save_flag=0;
@@ -103,6 +108,8 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
         chat_rcv.setLayoutManager(mLayoutManager_chat);
 
         chatData = new ArrayList<>();
+
+        saveDialog = new SaveDialog(this);
 
         //chatData.add(new ChatData("첫시작",1));
         //
@@ -364,10 +371,26 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                     else if(inputText.equals("저장하기")) {
                         //저장하는 코드 삽입
 
-                        Toast.makeText(getApplicationContext(), "저장ㅇㄹ", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(VoiceChatActivty.this, MainActivity.class);
-                        startActivity(intent);
+                        saveDialog.show();
+
+
+                        String q_hashTag = "해쉬태그 하나를 말해주세요.";
+                        ttsClient.play(q_hashTag);
+
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                                ttsClient.stop();
+                                sttClient.startRecording(false);
+                            }
+                        }, 3000);  // 2000은 2초를 의미합니다.
+
                         menu_flag = 0;
+                        save_flag = -1;
+
+                        //Toast.makeText(getApplicationContext(), "저장ㅇㄹ", Toast.LENGTH_SHORT).show();
+                        //Intent intent = new Intent(VoiceChatActivty.this, MainActivity.class);
+                        //startActivity(intent);
+
                     }
 
                     else{ //3개 메뉴가 아닌 것을 말했을 때 들어 오는 곳
@@ -399,6 +422,8 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
                             //다이얼로그 켜기
 
+                            saveDialog.show();
+
                             String q_hashTag = "해쉬태그 하나를 말해주세요.";
                             ttsClient.play(q_hashTag);
 
@@ -407,7 +432,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                                     ttsClient.stop();
                                     sttClient.startRecording(false);
                                 }
-                            }, 4000);  // 2000은 2초를 의미합니다.
+                            }, 3000);  // 2000은 2초를 의미합니다.
 
                             menu_flag = 0;
                             save_flag = -1;
@@ -424,6 +449,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                     }
                     else if(save_flag == -1){ //해쉬태그 입력
                         hashTag = inputText;
+                        saveDialog.setEditText(hashTag);
                         Toast.makeText(getApplicationContext(), "해쉬태그 : "+ hashTag, Toast.LENGTH_SHORT).show();
 
                     }
