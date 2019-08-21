@@ -26,5 +26,4 @@ public interface NetworkService {
     Call<PostChatResponse>postLastDiary(@Body PostChatResponseData postChatResponseData);
 
 
-
 }
