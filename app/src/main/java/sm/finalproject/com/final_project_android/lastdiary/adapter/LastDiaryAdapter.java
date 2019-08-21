@@ -49,7 +49,7 @@ public class LastDiaryAdapter extends RecyclerView.Adapter {
         final LastDiaryViewHolder lastDiaryViewHolder = (LastDiaryViewHolder) holder;
 
         String last_diary_date = lastDiaryData.get(position).last_diary_date;
-        String last_diary_content = lastDiaryData.get(position).last_diary_content;
+        final String last_diary_content = lastDiaryData.get(position).last_diary_content;
 
         lastDiaryViewHolder.date.setText(last_diary_date);
 
@@ -57,9 +57,10 @@ public class LastDiaryAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), LastDiaryContentActivity.class);
+                intent.putExtra("diary_content", last_diary_content);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 v.getContext().startActivity(intent);
-                //startActivity(intent);
+
             }
         });
 
