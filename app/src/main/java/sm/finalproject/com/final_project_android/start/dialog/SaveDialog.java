@@ -1,11 +1,13 @@
 package sm.finalproject.com.final_project_android.start.dialog;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -33,9 +35,13 @@ public class SaveDialog extends Dialog {
     Retrofit saveDiaryNetwork;
     //
 
+    Activity mActivty;
+
     EditText et_hashTag;
-    public SaveDialog(@NonNull Context context) {
-        super(context);
+    public SaveDialog(@NonNull Activity activity) {
+        super(activity);
+
+        mActivty = activity;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //다이얼로그의 타이틀바를 없애주는 옵션입니다.
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));  //다이얼로그의 배경을 투명으로 만듭니다.
@@ -75,17 +81,22 @@ public class SaveDialog extends Dialog {
                 if(response.isSuccessful()){
 
                     Toast.makeText(getContext(), "!!저장성공!!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getContext(), MainActivity.class);
-                    getContext().startActivity(intent);
+                    Intent intent = new Intent(mActivty, MainActivity.class);
+                    mActivty.startActivity(intent);
+                    mActivty.finish();
+
+
 
 
                 }else{
+                    Log.d("통신에러", "에러남?");
 
                 }
             }
 
             @Override
             public void onFailure(Call<PostLastDiaryResponse> call, Throwable t) {
+                Log.d("통신에러2",t.getMessage());
 
             }
         });

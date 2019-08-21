@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -16,23 +17,36 @@
         android:orientation="vertical">
 
         <TextView
-            android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="지난 일지 보기"/>
+            android:layout_gravity="center_horizontal"
+            android:text="지난 일기 보기" />
+
+        <Button
+            android:id="@+id/btn_search_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="날짜로 검색" />
+
+        <Button
+            android:id="@+id/btn_search_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="태그로 검색" />
+
+        <Button
+            android:id="@+id/btn_search_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="전체 보기" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/last_diary_rcv"
-            android:layout_marginTop="16dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"></android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
-
-
-
-
-
 
 
 </RelativeLayout>

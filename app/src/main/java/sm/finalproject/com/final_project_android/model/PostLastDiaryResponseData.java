@@ -4,16 +4,16 @@ import org.w3c.dom.Text;
 
 public class PostLastDiaryResponseData {
 
-    public PostLastDiaryResponseData(int userIdx, String diaryContent, String diaryDate, String diaryHashtag) {
+    public PostLastDiaryResponseData(int userIdx, String diaryContent, String diaryDate, String diaryHashTag) {
         this.userIdx = userIdx;
         this.diaryContent = diaryContent;
         this.diaryDate = diaryDate;
-        this.diaryHashtag = diaryHashtag;
+        this.diaryHashTag = diaryHashTag;
     }
 
     public int userIdx;
     public String diaryContent;
     public String diaryDate;
-    public String diaryHashtag;
+    public String diaryHashTag;
 
 }
