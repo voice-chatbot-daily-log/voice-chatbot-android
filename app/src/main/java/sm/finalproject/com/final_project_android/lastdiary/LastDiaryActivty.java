@@ -66,15 +66,6 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
         btn_search_tag=findViewById(R.id.btn_search_tag);
         btn_search_all=findViewById(R.id.btn_search_all);
 
-        textToSpeech = new TextToSpeech(this, this);
-
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                textToSpeech.stop();
-                startListening();
-            }
-        }, 10000);  // 2000은 2초를 의미합니다.
-
         //통신//
         builder = new Retrofit.Builder();
 
@@ -86,25 +77,28 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
         networkService = lastDiaryNetwork.create(NetworkService.class);
         //////
 
-
-
-
         last_diary_rcv = findViewById(R.id.last_diary_rcv);
         mLayoutManager_lastDiary = new LinearLayoutManager(this.getApplicationContext());
         last_diary_rcv.setHasFixedSize(true);
         last_diary_rcv.setLayoutManager(mLayoutManager_lastDiary);
 
-<<<<<<< HEAD
+        textToSpeech = new TextToSpeech(this, this);
+        handler = new Handler();
+
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                textToSpeech.stop();
+                startListening();
+            }
+        }, 9000);  // 2000은 2초를 의미합니다.
+
+
         btn_search_all.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getLastDiary();
             }
         });
-=======
-        lastDiaryData = new ArrayList<>();
-        getLastDiary();
->>>>>>> 91c7a396feeba8ae18d3c66ec143a2225af11a86
 
     }
 

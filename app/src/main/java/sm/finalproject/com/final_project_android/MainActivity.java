@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 //                    Log.e("에러",e.getMessage());
 //                  //  mRecognizer.cancel();
 //                }
-                
+
                 finish();
             }
         });
