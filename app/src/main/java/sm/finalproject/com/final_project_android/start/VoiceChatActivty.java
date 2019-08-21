@@ -77,11 +77,6 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
     private SpeechRecognizerClient sttClient;
     ///////////////////////////
 
-    //통신//
-    Retrofit.Builder builder;
-    Retrofit saveDiaryNetwork;
-    //
-
     private static final int REQUEST_CODE_AUDIO_AND_WRITE_EXTERNAL_STORAGE = 0;
     final String auth_head = "Bearer ";
     final String auth_body = "ya29.c.El9rB7Oh8FdbG4tl4qrYG-Qw1IWLCqKBkFqznRG4HISO5l5w8NiLrJ4bwJTIoUCTjBje-MOVgan3Dt3oW59RG0YRsKKb7bixpcuDgZ9wKH2qDr2Ok1wmS12SPk_Z9OeiDQ";
@@ -128,15 +123,6 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
         //chatData.add(new ChatData("첫시작",1));
 
-
-        //수정's server 통신설정//
-        builder = new Retrofit.Builder();
-
-        saveDiaryNetwork = builder
-                .baseUrl("http://13.209.245.84:3000/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        //////
 
         //다음 open api 통신 설정//
         networkService = ApplicationController.getInstance().getNetworkService();
@@ -481,7 +467,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                         //Toast.makeText(getApplicationContext(), "해쉬태그 : "+ hashTag, Toast.LENGTH_SHORT).show();
                         //저장하기
 
-                        postSaveLastDiary(1,dialogContext,hashTag);
+                        saveDialog.postSaveLastDiary(1,dialogContext,hashTag);
 
                     }
                     else { //그냥 대화를 할때 들어가는 곳
@@ -610,43 +596,6 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
         finish();
     }
 
-    public void postSaveLastDiary(int userIdx,String content,String hashTag){
 
-        //날짜구하기
-        long now = System.currentTimeMillis();
-        Date date = new Date(now);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MM월 dd일");
-        String realDate = dateFormat.format(date);
-
-
-        PostLastDiaryResponseData postLastDiaryResponseData = new PostLastDiaryResponseData(userIdx,content,realDate,hashTag);
-
-        networkService = saveDiaryNetwork.create(NetworkService.class);
-
-        final Call<PostLastDiaryResponse> postLastDiaryResponseCall = networkService.postLastDiary(postLastDiaryResponseData);
-        postLastDiaryResponseCall.enqueue(new Callback<PostLastDiaryResponse>() {
-            @Override
-            public void onResponse(Call<PostLastDiaryResponse> call, Response<PostLastDiaryResponse> response) {
-                if(response.isSuccessful()){
-
-                    Toast.makeText(getApplicationContext(), "!!저장성공!!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(VoiceChatActivty.this, MainActivity.class);
-                    startActivity(intent);
-
-
-                }else{
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PostLastDiaryResponse> call, Throwable t) {
-
-            }
-        });
-
-
-
-    }
 
 }
