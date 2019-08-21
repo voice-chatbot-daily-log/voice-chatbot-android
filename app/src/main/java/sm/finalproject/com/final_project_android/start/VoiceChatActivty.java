@@ -82,8 +82,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
     public ChatAdapter chatAdapter;
     //리사이클러뷰
 
-
-    private Context mContext;
+    public String hashTag = "";
 
     public int menu_flag=0;
     public int save_flag=0;
@@ -371,7 +370,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                         menu_flag = 0;
                     }
 
-                    else{
+                    else{ //3개 메뉴가 아닌 것을 말했을 때 들어 오는 곳
                         Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
 //                        handler.postDelayed(new Runnable() {
 //                            public void run() {
@@ -394,19 +393,39 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
                 }
 
-                else {
+                else { //menu_flag == 0
                     if(save_flag==1){
                         if(inputText.equals("네")) {
-                            //menu_flag = 0;
-                            Intent intent = new Intent(VoiceChatActivty.this, MainActivity.class);
-                            startActivity(intent);
-                            Toast.makeText(getApplicationContext(), "저장ㅇㄹ", Toast.LENGTH_SHORT).show();
+
+                            //다이얼로그 켜기
+
+                            String q_hashTag = "해쉬태그 하나를 말해주세요.";
+                            ttsClient.play(q_hashTag);
+
+                            handler.postDelayed(new Runnable() {
+                                public void run() {
+                                    ttsClient.stop();
+                                    sttClient.startRecording(false);
+                                }
+                            }, 4000);  // 2000은 2초를 의미합니다.
+
+                            menu_flag = 0;
+                            save_flag = -1;
+
+                            //Intent intent = new Intent(VoiceChatActivty.this, MainActivity.class);
+                            //startActivity(intent);
+                            //Toast.makeText(getApplicationContext(), "저장ㅇㄹ", Toast.LENGTH_SHORT).show();
 
                             //저장하는 코드 삽입해야함
                         }
                         else if(inputText.equals("아니요")){
                             Toast.makeText(getApplicationContext(), "저장안함", Toast.LENGTH_SHORT).show();
                         }
+                    }
+                    else if(save_flag == -1){ //해쉬태그 입력
+                        hashTag = inputText;
+                        Toast.makeText(getApplicationContext(), "해쉬태그 : "+ hashTag, Toast.LENGTH_SHORT).show();
+
                     }
                     else {
                         chatData.add(new ChatData(inputText, 1));

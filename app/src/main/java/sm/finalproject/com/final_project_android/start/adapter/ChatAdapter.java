@@ -38,6 +38,7 @@ public class ChatAdapter extends RecyclerView.Adapter {
         int isChatbot = chatData.get(position).chat_flag; //챗봇이 말한거면 0, 내가 말한거면 1
         String chatMsg = chatData.get(position).chat_message;
 
+
         chatViewHolder.chatmsg.setText(chatMsg);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -51,7 +52,6 @@ public class ChatAdapter extends RecyclerView.Adapter {
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
             chatViewHolder.chatbrg.setLayoutParams(params);
         }
-
 
     }
 
