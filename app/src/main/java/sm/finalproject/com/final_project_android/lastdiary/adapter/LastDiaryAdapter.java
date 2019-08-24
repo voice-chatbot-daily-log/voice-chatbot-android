@@ -1,13 +1,17 @@
 package sm.finalproject.com.final_project_android.lastdiary.adapter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -18,7 +22,11 @@ import sm.finalproject.com.final_project_android.lastdiary.LastDiaryContentActiv
 import sm.finalproject.com.final_project_android.lastdiary.data.LastDiaryData;
 import sm.finalproject.com.final_project_android.start.VoiceChatActivty;
 
-public class LastDiaryAdapter extends RecyclerView.Adapter {
+import static java.security.AccessController.getContext;
+
+public class LastDiaryAdapter extends RecyclerView.Adapter implements TextToSpeech.OnInitListener {
+
+    TextToSpeech list_tts;
 
     public static class LastDiaryViewHolder extends RecyclerView.ViewHolder{
 
@@ -45,7 +53,7 @@ public class LastDiaryAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         final LastDiaryViewHolder lastDiaryViewHolder = (LastDiaryViewHolder) holder;
 
         String last_diary_date = lastDiaryData.get(position).last_diary_date;
@@ -61,6 +69,7 @@ public class LastDiaryAdapter extends RecyclerView.Adapter {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 v.getContext().startActivity(intent);
 
+                ((LastDiaryActivty)((LastDiaryViewHolder) holder).date.getContext()).finish();
             }
         });
 
@@ -70,5 +79,11 @@ public class LastDiaryAdapter extends RecyclerView.Adapter {
     public int getItemCount() {
         return lastDiaryData.size();
     }
+
+    @Override
+    public void onInit(int status) {
+
+    }
 }
+
 

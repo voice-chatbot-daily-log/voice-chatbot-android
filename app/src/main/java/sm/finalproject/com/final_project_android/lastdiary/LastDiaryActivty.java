@@ -87,7 +87,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
         handler.postDelayed(new Runnable() {
             public void run() {
-                textToSpeech.stop();
+                //textToSpeech.stop();
                 startListening();
             }
         }, 9000);  // 2000은 2초를 의미합니다.
@@ -96,6 +96,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
         btn_search_all.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                textToSpeech.shutdown();
                 getLastDiary();
             }
         });
@@ -181,7 +182,8 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
         @Override
         public void onError(int error) {
             String message;
-
+//            int i=0;
+//            while(i<2){
             switch (error) {
                 case SpeechRecognizer.ERROR_AUDIO:
                     message = "오디오 에러";
@@ -232,7 +234,8 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                     message = "알 수 없는 오류임";
                     break;
             }
-
+//            i++;
+//            }
         }
 
         @Override
@@ -248,6 +251,10 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
             else if(inputText.equals("태그")) {
                 Toast.makeText(getApplicationContext(), "태그로 검색", Toast.LENGTH_SHORT).show();
+            }
+            else if(inputText.equals("전체")) {
+                Toast.makeText(getApplicationContext(), "전체 보기", Toast.LENGTH_SHORT).show();
+                getLastDiary();
             }
 
             else {
