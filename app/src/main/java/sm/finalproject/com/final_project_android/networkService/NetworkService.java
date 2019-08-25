@@ -33,7 +33,7 @@ public interface NetworkService {
 
     @GET("/diary/search/{userIdx}/date/{diaryDate}")
     Call<GetLastDiaryResponse>getLastDiaryByDate(@Path("userIdx") int userIdx,
-                                                    @Path("diaryDate") String diaryDate);
+                                                    @Path("diaryDate") String date);
 
 
 }

@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 tts.stop();
                 startListening();
             }
-        }, 3000);  // 2000은 2초를 의미합니다.
+        }, 4000);  // 2000은 2초를 의미합니다.
 
         btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,15 +95,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, LastDiaryActivty.class);
                 startActivity(intent);
-
-//                try {
-//                    tts.stop();
-//                    mRecognizer.cancel();
-//                }catch (Exception e){
-//                    Log.e("에러",e.getMessage());
-//                  //  mRecognizer.cancel();
-//                }
-
                 finish();
             }
         });
@@ -111,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     }
 
     public void onInit(int status) {
-        String startText = "시작하시려면 시작이라고 말하세요.";
+        String startText = "시작하시려면 시작, 지난 일기를 불러오시려면 지난 일기라고 말하세요.";
         tts.speak(startText, TextToSpeech.QUEUE_FLUSH, null);
     }
 
