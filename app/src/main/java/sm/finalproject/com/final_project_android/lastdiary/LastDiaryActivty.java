@@ -96,8 +96,10 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
         btn_search_all.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                textToSpeech.shutdown();
+                textToSpeech.stop();
                 getLastDiary();
+
+
             }
         });
 
@@ -111,10 +113,14 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                 if(response.isSuccessful()){
 
                     lastDiaryData = response.body().data;
-                    lastDiaryAdapter = new LastDiaryAdapter(lastDiaryData);
+                    lastDiaryAdapter = new LastDiaryAdapter(lastDiaryData,LastDiaryActivty.this);
 
                     last_diary_rcv.setAdapter(lastDiaryAdapter);
 
+                    for(int i=0;i<lastDiaryData.size();i++){
+                        textToSpeech.speak(lastDiaryData.get(i).last_diary_date, TextToSpeech.QUEUE_ADD, null);
+                        Log.d("날짜읽기",lastDiaryData.get(i).last_diary_date);
+                    }
                 }
             }
 
@@ -135,7 +141,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //tts.shutdown();
+        textToSpeech.shutdown();
 
     }
 
@@ -221,7 +227,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                     break;
                 case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
                     String sttError2 = "다시 말해주세요.";
-                    textToSpeech.speak(sttError2, TextToSpeech.QUEUE_FLUSH, null);
+                    //textToSpeech.speak(sttError2, TextToSpeech.QUEUE_FLUSH, null);
 
                     handler.postDelayed(new Runnable() {
                         public void run() {

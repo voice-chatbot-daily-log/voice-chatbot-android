@@ -44,4 +44,19 @@ public class LastDiaryContentActivity extends AppCompatActivity implements TextT
         diary_tts.speak(tv_last_diary_content.getText().toString(), TextToSpeech.QUEUE_FLUSH, null);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        diary_tts.shutdown();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        Intent intent = new Intent(LastDiaryContentActivity.this, LastDiaryActivty.class);
+        startActivity(intent);
+        finish();
+    }
 }
