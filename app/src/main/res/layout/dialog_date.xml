@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#ebebeb"
+    android:layout_width="350dp"
+    android:layout_height="200dp">
+
+    <TextView
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:textColor="#000000"
+        android:text="날짜로 검색하기"/>
+
+    <RelativeLayout
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/et_searchByDate"
+            android:layout_width="200dp"
+            android:layout_height="50dp" />
+        <ImageView
+            android:id="@+id/btn_searchByDate"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@+id/et_searchByDate"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#bcbcbc"/>
+    </RelativeLayout>
+
+
+
+</RelativeLayout>
