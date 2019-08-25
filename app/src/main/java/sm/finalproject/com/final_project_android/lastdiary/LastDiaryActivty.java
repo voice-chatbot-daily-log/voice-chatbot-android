@@ -56,6 +56,8 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
     Retrofit lastDiaryNetwork;
     //
 
+    int searchByDate_flag = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +109,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             @Override
             public void onClick(View v) {
                 textToSpeech.stop();
-                getLastDiaryByDate();
+                getLastDiaryByDate("2019년 8월 21일");
 
 
             }
@@ -171,14 +173,16 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
     }
 
-    public void getLastDiaryByDate(){
+    public void getLastDiaryByDate(String date){
 
-        final Call<GetLastDiaryResponse> getLastDiaryResponseByDateCall = networkService.getLastDiaryByDate(1,"날짜");
+        final Call<GetLastDiaryResponse> getLastDiaryResponseByDateCall = networkService.getLastDiaryByDate(1, date);
         getLastDiaryResponseByDateCall.enqueue(new Callback<GetLastDiaryResponse>() {
             @Override
             public void onResponse(Call<GetLastDiaryResponse> call, Response<GetLastDiaryResponse> response) {
                 lastDiaryData = response.body().data;
                 lastDiaryAdapter = new LastDiaryAdapter(lastDiaryData,LastDiaryActivty.this);
+
+
 
                 last_diary_rcv.setAdapter(lastDiaryAdapter);
                 for(int i=0;i<lastDiaryData.size();i++){
@@ -313,15 +317,24 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
         public void onResults(Bundle results) {
             final ArrayList<String> texts = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 
-            String inputText = texts.get(0);
+            final String inputText = texts.get(0);
             Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
 
             if (inputText.equals("날짜")) {
-                Toast.makeText(getApplicationContext(), "날짜로 검색", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "날짜로 검색", Toast.LENGTH_SHORT).show();
+                textToSpeech.speak("날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        startListening();
+                       // getLastDiaryByDate(inputText);
+                        searchByDate_flag = 1;
+                    }
+                }, 1000);  // 2000은 2초를 의미합니다.
             }
 
             else if(inputText.equals("태그")) {
                 Toast.makeText(getApplicationContext(), "태그로 검색", Toast.LENGTH_SHORT).show();
+                getLastDiaryByHashtag();
             }
             else if(inputText.equals("전체")) {
                 Toast.makeText(getApplicationContext(), "전체 보기", Toast.LENGTH_SHORT).show();
@@ -337,6 +350,14 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                     }
                 }, 1800);  // 2000은 2초를 의미합니다.
 
+            }
+
+            if(searchByDate_flag == 1){
+                getLastDiaryByDate(inputText);
+                Log.d("날짜검색", inputText);
+
+                searchByDate_flag =0;
+                
             }
 
         }

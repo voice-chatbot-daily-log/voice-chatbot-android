@@ -361,7 +361,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                         menu_flag=0;
                     }
 
-                    else if (inputText.equals("지난 일기 보기") || inputText.equals("지난1기") || inputText.equals("지난 일기") || inputText.equals("지난 1기")) {
+                    else if (inputText.equals("지난 일기 불러오기") || inputText.equals("지난1기") || inputText.equals("지난 일기") || inputText.equals("지난 1기")) {
                         //Toast.makeText(getApplicationContext(), "지난 일기 보기", Toast.LENGTH_SHORT).show();
                         sttClient.stopRecording();
 
