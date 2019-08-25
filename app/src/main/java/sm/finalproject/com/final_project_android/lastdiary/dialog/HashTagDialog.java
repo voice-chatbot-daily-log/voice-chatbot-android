@@ -46,15 +46,11 @@ public class HashTagDialog extends Dialog {
         btn_searchByTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((LastDiaryActivty)mActivty).getLastDiaryByHashtag();
+                ((LastDiaryActivty)mActivty).getLastDiaryByHashtag(et_searchByTag.getText().toString());
+                dismiss();
             }
         });
     }
-
-    public void setEditText(String hashtag){
-        et_searchByTag.setText(hashtag);
-    }
-
 
 
 

@@ -36,15 +36,11 @@ public class DateDialog extends Dialog {
         btn_searchByDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((LastDiaryActivty)mActivty).getLastDiaryByDate();
+                ((LastDiaryActivty)mActivty).getLastDiaryByDate(et_searchByDate.getText().toString());
+                dismiss();
             }
         });
     }
-
-    public void setEditText(String date){
-        et_searchByDate.setText(date);
-    }
-
 
 
 
