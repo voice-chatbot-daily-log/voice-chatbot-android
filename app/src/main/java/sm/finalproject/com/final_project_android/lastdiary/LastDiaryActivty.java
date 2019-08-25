@@ -1,5 +1,6 @@
 package sm.finalproject.com.final_project_android.lastdiary;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Handler;
 import android.speech.RecognitionListener;
@@ -28,6 +29,8 @@ import sm.finalproject.com.final_project_android.MainActivity;
 import sm.finalproject.com.final_project_android.R;
 import sm.finalproject.com.final_project_android.lastdiary.adapter.LastDiaryAdapter;
 import sm.finalproject.com.final_project_android.lastdiary.data.LastDiaryData;
+import sm.finalproject.com.final_project_android.lastdiary.dialog.DateDialog;
+import sm.finalproject.com.final_project_android.lastdiary.dialog.HashTagDialog;
 import sm.finalproject.com.final_project_android.model.GetLastDiaryResponse;
 import sm.finalproject.com.final_project_android.networkService.NetworkService;
 import sm.finalproject.com.final_project_android.start.VoiceChatActivty;
@@ -56,7 +59,11 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
     Retrofit lastDiaryNetwork;
     //
 
+    DateDialog dateDialog;
+    HashTagDialog hashTagDialog;
+
     int searchByDate_flag = 0;
+    int searchByTag_flag = 0;
 
 
     @Override
@@ -67,6 +74,9 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
         btn_search_date=findViewById(R.id.btn_search_date);
         btn_search_tag=findViewById(R.id.btn_search_tag);
         btn_search_all=findViewById(R.id.btn_search_all);
+
+        dateDialog = new DateDialog(this);
+        hashTagDialog = new HashTagDialog(this);
 
         //통신//
         builder = new Retrofit.Builder();
@@ -109,7 +119,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             @Override
             public void onClick(View v) {
                 textToSpeech.stop();
-                getLastDiaryByDate("2019년 8월 21일");
+                dateDialog.show();
 
 
             }
@@ -119,7 +129,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             @Override
             public void onClick(View v) {
                 textToSpeech.stop();
-                getLastDiaryByHashtag();
+                hashTagDialog.show();
 
             }
         });
@@ -151,8 +161,8 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
         });
     }
 
-    public void getLastDiaryByHashtag(){
-        final Call<GetLastDiaryResponse> getLastDiaryResponseByHashtagCall = networkService.getLastDiaryByHashTag(1,"해시태그");
+    public void getLastDiaryByHashtag(String hashTag){
+        final Call<GetLastDiaryResponse> getLastDiaryResponseByHashtagCall = networkService.getLastDiaryByHashTag(1,hashTag);
         getLastDiaryResponseByHashtagCall.enqueue(new Callback<GetLastDiaryResponse>() {
             @Override
             public void onResponse(Call<GetLastDiaryResponse> call, Response<GetLastDiaryResponse> response) {
@@ -326,7 +336,6 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                 handler.postDelayed(new Runnable() {
                     public void run() {
                         startListening();
-                       // getLastDiaryByDate(inputText);
                         searchByDate_flag = 1;
                     }
                 }, 1000);  // 2000은 2초를 의미합니다.
@@ -334,7 +343,13 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
             else if(inputText.equals("태그")) {
                 Toast.makeText(getApplicationContext(), "태그로 검색", Toast.LENGTH_SHORT).show();
-                getLastDiaryByHashtag();
+                textToSpeech.speak("태그를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        startListening();
+                        searchByTag_flag = 1;
+                    }
+                }, 1000);  // 2000은 2초를 의미합니다.
             }
             else if(inputText.equals("전체")) {
                 Toast.makeText(getApplicationContext(), "전체 보기", Toast.LENGTH_SHORT).show();
@@ -352,12 +367,18 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
             }
 
-            if(searchByDate_flag == 1){
+            if(searchByDate_flag == 1){ //날짜로 검색시 stt
                 getLastDiaryByDate(inputText);
-                Log.d("날짜검색", inputText);
 
                 searchByDate_flag =0;
                 
+            }
+
+            if(searchByTag_flag == 1){//태그로 검색시 stt
+                getLastDiaryByHashtag(inputText);
+
+                searchByTag_flag =0;
+
             }
 
         }
