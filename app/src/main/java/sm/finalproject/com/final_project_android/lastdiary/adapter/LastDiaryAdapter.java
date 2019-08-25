@@ -3,7 +3,6 @@ package sm.finalproject.com.final_project_android.lastdiary.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,9 +24,8 @@ import sm.finalproject.com.final_project_android.start.VoiceChatActivty;
 
 import static java.security.AccessController.getContext;
 
-public class LastDiaryAdapter extends RecyclerView.Adapter implements TextToSpeech.OnInitListener {
+public class LastDiaryAdapter extends RecyclerView.Adapter {
 
-    TextToSpeech list_tts;
     String last_diary_date;
 
     public static class LastDiaryViewHolder extends RecyclerView.ViewHolder{
@@ -42,9 +40,11 @@ public class LastDiaryAdapter extends RecyclerView.Adapter implements TextToSpee
     }
 
     private ArrayList<LastDiaryData> lastDiaryData;
+    private Activity mActivity;
 
-    public LastDiaryAdapter(ArrayList<LastDiaryData> lastDiaryData){
+    public LastDiaryAdapter(ArrayList<LastDiaryData> lastDiaryData,Activity activity){
         this.lastDiaryData = lastDiaryData;
+        this.mActivity = activity;
     }
 
     @NonNull
@@ -64,17 +64,13 @@ public class LastDiaryAdapter extends RecyclerView.Adapter implements TextToSpee
 
         lastDiaryViewHolder.date.setText(last_diary_date);
 
-        list_tts = new TextToSpeech(((LastDiaryViewHolder) holder).date.getContext(), this);
-
         lastDiaryViewHolder.date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), LastDiaryContentActivity.class);
+                Intent intent = new Intent(mActivity, LastDiaryContentActivity.class);
                 intent.putExtra("diary_content", last_diary_content);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                v.getContext().startActivity(intent);
-
-                ((LastDiaryActivty)((LastDiaryViewHolder) holder).date.getContext()).finish();
+                mActivity.startActivity(intent);
+                mActivity.finish();
             }
         });
 
@@ -85,11 +81,6 @@ public class LastDiaryAdapter extends RecyclerView.Adapter implements TextToSpee
         return lastDiaryData.size();
     }
 
-    @Override
-    public void onInit(int status) {
-        list_tts.setLanguage(Locale.KOREAN);
-        list_tts.speak(last_diary_date, TextToSpeech.QUEUE_FLUSH, null);
-    }
 }
 
 
