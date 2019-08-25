@@ -27,5 +27,13 @@ public interface NetworkService {
     @POST("/diary/save")
     Call<PostLastDiaryResponse>postLastDiary(@Body PostLastDiaryResponseData postLastDiaryResponseData);
 
+    @GET("/diary/search/{userIdx}/hashtag/{diaryHashTag}")
+    Call<GetLastDiaryResponse>getLastDiaryByHashTag(@Path("userIdx") int userIdx,
+                                                    @Path("diaryHashTag") String diaryHashTag);
+
+    @GET("/diary/search/{userIdx}/date/{diaryDate}")
+    Call<GetLastDiaryResponse>getLastDiaryByDate(@Path("userIdx") int userIdx,
+                                                    @Path("diaryDate") String diaryDate);
+
 
 }

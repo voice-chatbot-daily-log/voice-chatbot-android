@@ -103,6 +103,25 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             }
         });
 
+        btn_search_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textToSpeech.stop();
+                getLastDiaryByDate();
+
+
+            }
+        });
+
+        btn_search_tag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textToSpeech.stop();
+                getLastDiaryByHashtag();
+
+            }
+        });
+
     }
 
     public void getLastDiary(){
@@ -119,7 +138,6 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
                     for(int i=0;i<lastDiaryData.size();i++){
                         textToSpeech.speak(lastDiaryData.get(i).last_diary_date, TextToSpeech.QUEUE_ADD, null);
-                        Log.d("날짜읽기",lastDiaryData.get(i).last_diary_date);
                     }
                 }
             }
@@ -129,6 +147,52 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
             }
         });
+    }
+
+    public void getLastDiaryByHashtag(){
+        final Call<GetLastDiaryResponse> getLastDiaryResponseByHashtagCall = networkService.getLastDiaryByHashTag(1,"해시태그");
+        getLastDiaryResponseByHashtagCall.enqueue(new Callback<GetLastDiaryResponse>() {
+            @Override
+            public void onResponse(Call<GetLastDiaryResponse> call, Response<GetLastDiaryResponse> response) {
+                lastDiaryData = response.body().data;
+                lastDiaryAdapter = new LastDiaryAdapter(lastDiaryData,LastDiaryActivty.this);
+
+                last_diary_rcv.setAdapter(lastDiaryAdapter);
+                for(int i=0;i<lastDiaryData.size();i++){
+                    textToSpeech.speak(lastDiaryData.get(i).last_diary_date, TextToSpeech.QUEUE_ADD, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetLastDiaryResponse> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    public void getLastDiaryByDate(){
+
+        final Call<GetLastDiaryResponse> getLastDiaryResponseByDateCall = networkService.getLastDiaryByDate(1,"날짜");
+        getLastDiaryResponseByDateCall.enqueue(new Callback<GetLastDiaryResponse>() {
+            @Override
+            public void onResponse(Call<GetLastDiaryResponse> call, Response<GetLastDiaryResponse> response) {
+                lastDiaryData = response.body().data;
+                lastDiaryAdapter = new LastDiaryAdapter(lastDiaryData,LastDiaryActivty.this);
+
+                last_diary_rcv.setAdapter(lastDiaryAdapter);
+                for(int i=0;i<lastDiaryData.size();i++){
+                    textToSpeech.speak(lastDiaryData.get(i).last_diary_date, TextToSpeech.QUEUE_ADD, null);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<GetLastDiaryResponse> call, Throwable t) {
+
+            }
+        });
+
     }
 
     @Override
