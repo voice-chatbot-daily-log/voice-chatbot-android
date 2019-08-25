@@ -64,7 +64,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
     int searchByDate_flag = 0;
     int searchByTag_flag = 0;
-
+    int searchAll_flag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,9 +148,12 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
                     last_diary_rcv.setAdapter(lastDiaryAdapter);
 
+                    speechRecognizer.cancel();
+
                     for(int i=0;i<lastDiaryData.size();i++){
                         textToSpeech.speak(lastDiaryData.get(i).last_diary_date, TextToSpeech.QUEUE_ADD, null);
                     }
+
                 }
             }
 
@@ -170,9 +173,13 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                 lastDiaryAdapter = new LastDiaryAdapter(lastDiaryData,LastDiaryActivty.this);
 
                 last_diary_rcv.setAdapter(lastDiaryAdapter);
+
+                speechRecognizer.cancel();
+
                 for(int i=0;i<lastDiaryData.size();i++){
                     textToSpeech.speak(lastDiaryData.get(i).last_diary_date, TextToSpeech.QUEUE_ADD, null);
                 }
+
             }
 
             @Override
@@ -198,6 +205,8 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                 for(int i=0;i<lastDiaryData.size();i++){
                     textToSpeech.speak(lastDiaryData.get(i).last_diary_date, TextToSpeech.QUEUE_ADD, null);
                 }
+
+                speechRecognizer.stopListening();
 
             }
 
@@ -354,9 +363,10 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             else if(inputText.equals("전체")) {
                 Toast.makeText(getApplicationContext(), "전체 보기", Toast.LENGTH_SHORT).show();
                 getLastDiary();
+                searchAll_flag =1;
             }
 
-            else {
+            else if(searchByTag_flag==0 && searchByDate_flag==0 && searchAll_flag==0){
                 handler.postDelayed(new Runnable() {
                     public void run() {
                         textToSpeech.stop();
@@ -369,16 +379,10 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
             if(searchByDate_flag == 1){ //날짜로 검색시 stt
                 getLastDiaryByDate(inputText);
-
-                searchByDate_flag =0;
-                
             }
 
             if(searchByTag_flag == 1){//태그로 검색시 stt
                 getLastDiaryByHashtag(inputText);
-
-                searchByTag_flag =0;
-
             }
 
         }
