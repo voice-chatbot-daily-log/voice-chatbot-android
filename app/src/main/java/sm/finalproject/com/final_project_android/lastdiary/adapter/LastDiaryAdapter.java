@@ -14,6 +14,7 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import sm.finalproject.com.final_project_android.MainActivity;
 import sm.finalproject.com.final_project_android.R;
@@ -27,6 +28,7 @@ import static java.security.AccessController.getContext;
 public class LastDiaryAdapter extends RecyclerView.Adapter implements TextToSpeech.OnInitListener {
 
     TextToSpeech list_tts;
+    String last_diary_date;
 
     public static class LastDiaryViewHolder extends RecyclerView.ViewHolder{
 
@@ -35,6 +37,7 @@ public class LastDiaryAdapter extends RecyclerView.Adapter implements TextToSpee
         public LastDiaryViewHolder(@NonNull View itemView) {
             super(itemView);
             date = itemView.findViewById(R.id.tv_last_diary_date);
+
         }
     }
 
@@ -56,10 +59,12 @@ public class LastDiaryAdapter extends RecyclerView.Adapter implements TextToSpee
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         final LastDiaryViewHolder lastDiaryViewHolder = (LastDiaryViewHolder) holder;
 
-        String last_diary_date = lastDiaryData.get(position).last_diary_date;
+        last_diary_date = lastDiaryData.get(position).last_diary_date;
         final String last_diary_content = lastDiaryData.get(position).last_diary_content;
 
         lastDiaryViewHolder.date.setText(last_diary_date);
+
+        list_tts = new TextToSpeech(((LastDiaryViewHolder) holder).date.getContext(), this);
 
         lastDiaryViewHolder.date.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +87,8 @@ public class LastDiaryAdapter extends RecyclerView.Adapter implements TextToSpee
 
     @Override
     public void onInit(int status) {
-
+        list_tts.setLanguage(Locale.KOREAN);
+        list_tts.speak(last_diary_date, TextToSpeech.QUEUE_FLUSH, null);
     }
 }
 

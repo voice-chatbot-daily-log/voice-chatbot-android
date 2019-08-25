@@ -114,6 +114,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                     lastDiaryAdapter = new LastDiaryAdapter(lastDiaryData);
 
                     last_diary_rcv.setAdapter(lastDiaryAdapter);
+
                 }
             }
 
@@ -202,7 +203,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                     break;
                 case SpeechRecognizer.ERROR_NO_MATCH:
                     String sttError1 = "다시 말해주세요.";
-                    textToSpeech.speak(sttError1, TextToSpeech.QUEUE_FLUSH, null);
+                    //textToSpeech.speak(sttError1, TextToSpeech.QUEUE_FLUSH, null);
 
                     handler.postDelayed(new Runnable() {
                         public void run() {
