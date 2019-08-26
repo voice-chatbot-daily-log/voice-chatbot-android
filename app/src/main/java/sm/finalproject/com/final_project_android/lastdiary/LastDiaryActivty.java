@@ -66,6 +66,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
     int searchByTag_flag = 0;
     int searchAll_flag = 0;
 
+    int getContentByVoice_flag = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,6 +153,13 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                         textToSpeech.speak(lastDiaryData.get(i).last_diary_date, TextToSpeech.QUEUE_ADD, null);
                     }
 
+                    textToSpeech.speak("내용을 알고싶은 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            startListening();
+                            getContentByVoice_flag = 1;
+                        }
+                    }, 2000);  // 2000은 2초를 의미합니다.
 
                 }
             }
@@ -407,6 +415,10 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
             }
 
+            if(getContentByVoice_flag == 1){
+                getContentByVocie(inputText,lastDiaryData);
+            }
+
             if(searchByDate_flag == 1){ //날짜로 검색시 stt
                 getLastDiaryByDate(inputText);
             }
@@ -436,5 +448,16 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
         Intent intent = new Intent(LastDiaryActivty.this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    public void getContentByVocie(String inputText, ArrayList<LastDiaryData> lastDiaryData){
+        for(int i = 0; i< lastDiaryData.size();i++){
+            if(inputText.equals(lastDiaryData.get(i).last_diary_date)){
+                Intent intent = new Intent(this, LastDiaryContentActivity.class);
+                intent.putExtra("diary_content",lastDiaryData.get(i).last_diary_content);
+                startActivity(intent);
+            }
+        }
+
     }
 }
