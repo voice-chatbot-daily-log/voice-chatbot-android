@@ -1,6 +1,6 @@
 package sm.finalproject.com.final_project_android.lastdiary;
 
-import android.app.Dialog;
+
 import android.content.Intent;
 import android.os.Handler;
 import android.speech.RecognitionListener;
@@ -148,11 +148,10 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
                     last_diary_rcv.setAdapter(lastDiaryAdapter);
 
-                    speechRecognizer.cancel();
-
                     for(int i=0;i<lastDiaryData.size();i++){
                         textToSpeech.speak(lastDiaryData.get(i).last_diary_date, TextToSpeech.QUEUE_ADD, null);
                     }
+
 
                 }
             }
@@ -174,11 +173,11 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
                 last_diary_rcv.setAdapter(lastDiaryAdapter);
 
-                speechRecognizer.cancel();
-
                 for(int i=0;i<lastDiaryData.size();i++){
                     textToSpeech.speak(lastDiaryData.get(i).last_diary_date, TextToSpeech.QUEUE_ADD, null);
                 }
+
+
 
             }
 
@@ -199,15 +198,27 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                 lastDiaryData = response.body().data;
                 lastDiaryAdapter = new LastDiaryAdapter(lastDiaryData,LastDiaryActivty.this);
 
-
-
                 last_diary_rcv.setAdapter(lastDiaryAdapter);
                 for(int i=0;i<lastDiaryData.size();i++){
                     textToSpeech.speak(lastDiaryData.get(i).last_diary_date, TextToSpeech.QUEUE_ADD, null);
                 }
 
-                speechRecognizer.stopListening();
+//                textToSpeech.speak("내용을 불러올 일기의 제목을 말해주세요", TextToSpeech.QUEUE_FLUSH, null);
+//                handler.postDelayed(new Runnable() {
+//                    public void run() {
+//                        //textToSpeech.stop();
+//                        startListening();
+//                    }
+//                }, 6000);  // 2000은 2초를 의미합니다.
 
+//                Intent intent2 = new Intent(LastDiaryActivty.this, LastDiaryContentActivity.class);
+//
+//                Intent intent = getIntent();
+//                String last_diary_content = intent.getStringExtra("diary_content");
+//                intent.putExtra("diary_content", last_diary_content);
+//
+//                startActivity(intent2);
+//                finish();
             }
 
             @Override
@@ -216,6 +227,25 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             }
         });
 
+    }
+
+    public void getContentSTT(String title){
+
+        textToSpeech.speak("내용을 불러올 일기의 제목을 말해주세요", TextToSpeech.QUEUE_FLUSH, null);
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                //textToSpeech.stop();
+                startListening();
+            }
+        }, 6000);  // 2000은 2초를 의미합니다.
+        Intent intent2 = new Intent(LastDiaryActivty.this, LastDiaryContentActivity.class);
+
+        Intent intent = getIntent();
+        String last_diary_content = intent.getStringExtra("diary_content");
+        intent.putExtra("diary_content", last_diary_content);
+
+        startActivity(intent2);
+        finish();
     }
 
     @Override
@@ -358,7 +388,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                         startListening();
                         searchByTag_flag = 1;
                     }
-                }, 1000);  // 2000은 2초를 의미합니다.
+                }, 1100);  // 2000은 2초를 의미합니다.
             }
             else if(inputText.equals("전체")) {
                 Toast.makeText(getApplicationContext(), "전체 보기", Toast.LENGTH_SHORT).show();

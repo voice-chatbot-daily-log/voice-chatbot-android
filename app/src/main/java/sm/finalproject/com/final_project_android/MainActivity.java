@@ -15,6 +15,7 @@ import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -34,6 +35,7 @@ import com.kakao.sdk.newtoneapi.impl.util.PermissionUtils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -74,12 +76,14 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
         tts = new TextToSpeech(this, this);
 
+        getDevicesUUID(MainActivity.this);
+
         handler.postDelayed(new Runnable() {
             public void run() {
                 tts.stop();
                 startListening();
             }
-        }, 4000);  // 2000은 2초를 의미합니다.
+        }, 5000);  // 2000은 2초를 의미합니다.
 
         btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,7 +102,17 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 finish();
             }
         });
+    }
 
+    private String getDevicesUUID(Context mContext){
+        final TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+        final String tmDevice, tmSerial, androidId;
+        tmDevice = "" + tm.getDeviceId();
+        tmSerial = "" + tm.getSimSerialNumber();
+        androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+        UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() << 32) | tmSerial.hashCode());
+        String deviceId = deviceUuid.toString();
+        return deviceId;
     }
 
     public void onInit(int status) {
@@ -268,6 +282,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
 
     };
+
+
 
 }
 
