@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Handler;
+import android.provider.Settings;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -32,6 +33,7 @@ import com.kakao.sdk.newtoneapi.TextToSpeechListener;
 import com.kakao.sdk.newtoneapi.TextToSpeechManager;
 import com.kakao.sdk.newtoneapi.impl.util.PermissionUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -105,14 +107,20 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     }
 
     private String getDevicesUUID(Context mContext){
-        final TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
-        final String tmDevice, tmSerial, androidId;
-        tmDevice = "" + tm.getDeviceId();
-        tmSerial = "" + tm.getSimSerialNumber();
-        androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-        UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() << 32) | tmSerial.hashCode());
-        String deviceId = deviceUuid.toString();
-        return deviceId;
+        UUID uuid = null;
+        String androidId = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+        if (androidId == null || androidId.isEmpty() || androidId.equals("9774d56d682e549c")) {
+            uuid = UUID.randomUUID();
+        } else {
+            try {
+                uuid = UUID.nameUUIDFromBytes(androidId.getBytes("UTF8"));
+                Log.d("uuid", uuid.toString());
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                uuid = UUID.randomUUID();
+            }
+        }
+        return uuid.toString();
     }
 
     public void onInit(int status) {
@@ -280,11 +288,16 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
         }
 
-
     };
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
+        ActivityCompat.finishAffinity(this);
+        //System.exit(0);
 
+    }
 }
 
 

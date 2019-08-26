@@ -1,7 +1,10 @@
 package sm.finalproject.com.final_project_android.lastdiary;
 
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
+import android.icu.text.IDNA;
 import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -16,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.kakao.sdk.newtoneapi.SpeechRecognizeListener;
 import com.kakao.sdk.newtoneapi.impl.util.PermissionUtils;
 
 import java.util.ArrayList;
@@ -67,6 +71,9 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
     int searchAll_flag = 0;
 
     int getContentByVoice_flag = 0;
+
+    int stop_flag=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +108,9 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
         handler.postDelayed(new Runnable() {
             public void run() {
                 //textToSpeech.stop();
-                startListening();
+                if(stop_flag!=1){
+                    startListening();
+                }
             }
         }, 9000);  // 2000은 2초를 의미합니다.
 
@@ -110,7 +119,14 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             @Override
             public void onClick(View v) {
                 textToSpeech.stop();
+                if(isSTTPlaying(LastDiaryActivty.this)){
+                    speechRecognizer.cancel();
+                }
+                else{
+                    stop_flag=1;
+                }
                 getLastDiary();
+
 
 
             }
@@ -120,6 +136,12 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             @Override
             public void onClick(View v) {
                 textToSpeech.stop();
+                if(isSTTPlaying(LastDiaryActivty.this)){
+                    speechRecognizer.cancel();
+                }
+                else{
+                    stop_flag=1;
+                }
                 dateDialog.show();
 
 
@@ -130,6 +152,12 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             @Override
             public void onClick(View v) {
                 textToSpeech.stop();
+                if(isSTTPlaying(LastDiaryActivty.this)){
+                    speechRecognizer.cancel();
+                }
+                else{
+                    stop_flag=1;
+                }
                 hashTagDialog.show();
 
             }
@@ -153,13 +181,13 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                         textToSpeech.speak(lastDiaryData.get(i).last_diary_date, TextToSpeech.QUEUE_ADD, null);
                     }
 
-                    textToSpeech.speak("내용을 알고싶은 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
+                    textToSpeech.speak("내용을 불러올 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
                     handler.postDelayed(new Runnable() {
                         public void run() {
                             startListening();
                             getContentByVoice_flag = 1;
                         }
-                    }, 2000);  // 2000은 2초를 의미합니다.
+                    }, 2700);  // 2000은 2초를 의미합니다.
 
                 }
             }
@@ -185,7 +213,15 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                     textToSpeech.speak(lastDiaryData.get(i).last_diary_date, TextToSpeech.QUEUE_ADD, null);
                 }
 
+                stop_flag=0;
 
+                textToSpeech.speak("내용을 불러올 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        startListening();
+                        getContentByVoice_flag = 1;
+                    }
+                }, 2700);  // 2000은 2초를 의미합니다.
 
             }
 
@@ -211,22 +247,14 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                     textToSpeech.speak(lastDiaryData.get(i).last_diary_date, TextToSpeech.QUEUE_ADD, null);
                 }
 
-//                textToSpeech.speak("내용을 불러올 일기의 제목을 말해주세요", TextToSpeech.QUEUE_FLUSH, null);
-//                handler.postDelayed(new Runnable() {
-//                    public void run() {
-//                        //textToSpeech.stop();
-//                        startListening();
-//                    }
-//                }, 6000);  // 2000은 2초를 의미합니다.
+                textToSpeech.speak("내용을 불러올 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        startListening();
+                        getContentByVoice_flag = 1;
+                    }
+                }, 2700);  // 2000은 2초를 의미합니다.
 
-//                Intent intent2 = new Intent(LastDiaryActivty.this, LastDiaryContentActivity.class);
-//
-//                Intent intent = getIntent();
-//                String last_diary_content = intent.getStringExtra("diary_content");
-//                intent.putExtra("diary_content", last_diary_content);
-//
-//                startActivity(intent2);
-//                finish();
             }
 
             @Override
@@ -237,29 +265,10 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
     }
 
-    public void getContentSTT(String title){
-
-        textToSpeech.speak("내용을 불러올 일기의 제목을 말해주세요", TextToSpeech.QUEUE_FLUSH, null);
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                //textToSpeech.stop();
-                startListening();
-            }
-        }, 6000);  // 2000은 2초를 의미합니다.
-        Intent intent2 = new Intent(LastDiaryActivty.this, LastDiaryContentActivity.class);
-
-        Intent intent = getIntent();
-        String last_diary_content = intent.getStringExtra("diary_content");
-        intent.putExtra("diary_content", last_diary_content);
-
-        startActivity(intent2);
-        finish();
-    }
-
     @Override
     public void onInit(int status) {
         Log.d("메뉴", "ㅇㅋ");
-        String selectText = "날짜로 검색하시려면 날짜, 태그로 검색하시려면 태그, 전체를 보시려면 전체라고 말해주세요";
+        String selectText = "날짜로 검색하려면 날짜, 태그로 검색하려면 태그, 전체를 불러오려면 전체라고 말해주세요";
         textToSpeech.speak(selectText, TextToSpeech.QUEUE_FLUSH, null);
     }
 
@@ -280,8 +289,8 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
         Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
 
         if (PermissionUtils.checkAudioRecordPermission(LastDiaryActivty.this)) {
-            speechRecognizer.setRecognitionListener(speechToTextListener);
-            speechRecognizer.startListening(i);
+                speechRecognizer.setRecognitionListener(speechToTextListener);
+                speechRecognizer.startListening(i);
         }
     }
 
@@ -399,7 +408,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                 }, 1100);  // 2000은 2초를 의미합니다.
             }
             else if(inputText.equals("전체")) {
-                Toast.makeText(getApplicationContext(), "전체 보기", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "전체 불러오기", Toast.LENGTH_SHORT).show();
                 getLastDiary();
                 searchAll_flag =1;
             }
@@ -416,7 +425,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             }
 
             if(getContentByVoice_flag == 1){
-                getContentByVocie(inputText,lastDiaryData);
+                getContentByVoice(inputText,lastDiaryData);
             }
 
             if(searchByDate_flag == 1){ //날짜로 검색시 stt
@@ -450,14 +459,31 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
         finish();
     }
 
-    public void getContentByVocie(String inputText, ArrayList<LastDiaryData> lastDiaryData){
+    public Boolean isSTTPlaying(Context mContext){
+
+        ActivityManager manager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if ("com.google.android.voicesearch.serviceapi.GoogleRecognitionService".equals(service.service.getClassName())) {
+                Log.d("stt확인", "ㅇㅇ");
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public void getContentByVoice(String inputText, ArrayList<LastDiaryData> lastDiaryData){
         for(int i = 0; i< lastDiaryData.size();i++){
             if(inputText.equals(lastDiaryData.get(i).last_diary_date)){
                 Intent intent = new Intent(this, LastDiaryContentActivity.class);
                 intent.putExtra("diary_content",lastDiaryData.get(i).last_diary_content);
                 startActivity(intent);
+                finish();
             }
         }
 
     }
+
+
 }
