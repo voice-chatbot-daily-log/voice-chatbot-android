@@ -204,7 +204,6 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                                         }
                                     }, 3000);  // 2000은 2초를 의미합니다.
                                 }
-
                             }
                         }
                     }, 200);
@@ -260,9 +259,6 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                         }
                     }
                 }, 200);
-
-
-
             }
 
             @Override
@@ -315,7 +311,6 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                         }
                     }
                 }, 200);
-
             }
 
             @Override
@@ -532,22 +527,6 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                 return true;
             }
         }
-        return false;
-    }
-
-    public Boolean isTTSPlaying(Context mContext){
-
-        ActivityManager manager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
-
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if ("com.google.android.voiceinteraction.GsaVoiceInteractionService".equals(service.service.getClassName())) {
-                Log.d("tts확인", "ㅇㅇ");
-                return true;
-            }
-        }
-//        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-//            Log.d("tts확인", service.service.getClassName());
-//        }
         return false;
     }
 
