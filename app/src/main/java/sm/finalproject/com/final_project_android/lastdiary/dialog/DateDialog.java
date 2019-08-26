@@ -1,10 +1,14 @@
 package sm.finalproject.com.final_project_android.lastdiary.dialog;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.speech.SpeechRecognizer;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -16,7 +20,7 @@ import sm.finalproject.com.final_project_android.lastdiary.LastDiaryActivty;
 public class DateDialog extends Dialog {
 
 
-    Activity mActivty;
+    Activity mActivity;
 
     EditText et_searchByDate;
     ImageView btn_searchByDate;
@@ -24,7 +28,7 @@ public class DateDialog extends Dialog {
 
     public DateDialog(@NonNull final LastDiaryActivty activity) {
         super(activity);
-        mActivty = activity;
+        mActivity = activity;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //다이얼로그의 타이틀바를 없애주는 옵션입니다.
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));  //다이얼로그의 배경을 투명으로 만듭니다.
@@ -36,13 +40,11 @@ public class DateDialog extends Dialog {
         btn_searchByDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((LastDiaryActivty)mActivty).getLastDiaryByDate(et_searchByDate.getText().toString());
+                ((LastDiaryActivty)mActivity).getLastDiaryByDate(et_searchByDate.getText().toString());
                 dismiss();
             }
         });
+
     }
-
-
-
 
 }

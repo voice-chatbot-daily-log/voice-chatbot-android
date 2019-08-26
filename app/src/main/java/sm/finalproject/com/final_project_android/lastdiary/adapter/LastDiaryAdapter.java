@@ -5,13 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.kakao.sdk.newtoneapi.impl.util.PermissionUtils;
 
 import org.w3c.dom.Text;
 
@@ -30,7 +35,10 @@ import static java.security.AccessController.getContext;
 public class LastDiaryAdapter extends RecyclerView.Adapter {
 
     String last_diary_date;
-    SpeechRecognizer contentspeechRecognizer;
+//    SpeechRecognizer mRecognizer;
+//
+//    Context mContext;
+
 
     public static class LastDiaryViewHolder extends RecyclerView.ViewHolder{
 
@@ -46,7 +54,7 @@ public class LastDiaryAdapter extends RecyclerView.Adapter {
     private ArrayList<LastDiaryData> lastDiaryData;
     private Activity mActivity;
 
-    public LastDiaryAdapter(ArrayList<LastDiaryData> lastDiaryData,Activity activity){
+    public LastDiaryAdapter(ArrayList<LastDiaryData> lastDiaryData, Activity activity){
         this.lastDiaryData = lastDiaryData;
         this.mActivity = activity;
     }
@@ -84,53 +92,6 @@ public class LastDiaryAdapter extends RecyclerView.Adapter {
     public int getItemCount() {
         return lastDiaryData.size();
     }
-
-    public RecognitionListener speechToTextListener = new RecognitionListener() {
-        @Override
-        public void onReadyForSpeech(Bundle params) {
-
-        }
-
-        @Override
-        public void onBeginningOfSpeech() {
-
-        }
-
-        @Override
-        public void onRmsChanged(float rmsdB) {
-
-        }
-
-        @Override
-        public void onBufferReceived(byte[] buffer) {
-
-        }
-
-        @Override
-        public void onEndOfSpeech() {
-
-        }
-
-        @Override
-        public void onError(int error) {
-
-        }
-
-        @Override
-        public void onResults(Bundle results) {
-
-        }
-
-        @Override
-        public void onPartialResults(Bundle partialResults) {
-
-        }
-
-        @Override
-        public void onEvent(int eventType, Bundle params) {
-
-        }
-    };
 
 }
 
