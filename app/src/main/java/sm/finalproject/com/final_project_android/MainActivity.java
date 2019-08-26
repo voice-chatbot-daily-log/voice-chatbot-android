@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 tts.stop();
                 startListening();
             }
-        }, 5000);  // 2000은 2초를 의미합니다.
+        }, 5500);  // 2000은 2초를 의미합니다.
 
         btn_start.setOnClickListener(new View.OnClickListener() {
             @Override

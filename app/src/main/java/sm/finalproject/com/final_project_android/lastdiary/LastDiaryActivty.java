@@ -73,6 +73,8 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
     int getContentByVoice_flag = 0;
 
     int stop_flag=0;
+    int tts_stop_flag=0;
+    int i;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,11 +110,9 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
         handler.postDelayed(new Runnable() {
             public void run() {
                 //textToSpeech.stop();
-                if(stop_flag!=1){
                     startListening();
-                }
             }
-        }, 9000);  // 2000은 2초를 의미합니다.
+        }, 8700);  // 2000은 2초를 의미합니다.
 
 
         btn_search_all.setOnClickListener(new View.OnClickListener() {
@@ -126,8 +126,6 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                     stop_flag=1;
                 }
                 getLastDiary();
-
-
 
             }
         });
@@ -177,18 +175,39 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
                     last_diary_rcv.setAdapter(lastDiaryAdapter);
 
-                    for(int i=0;i<lastDiaryData.size();i++){
+                    for(i=0;i<lastDiaryData.size();i++){
                         textToSpeech.speak(lastDiaryData.get(i).last_diary_date, TextToSpeech.QUEUE_ADD, null);
                     }
 
-                    textToSpeech.speak("내용을 불러올 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
                     handler.postDelayed(new Runnable() {
+                        @Override
                         public void run() {
-                            startListening();
-                            getContentByVoice_flag = 1;
-                        }
-                    }, 2700);  // 2000은 2초를 의미합니다.
+                            if (tts_stop_flag == 0) {
+                                while (textToSpeech.isSpeaking()) {
+                                    tts_stop_flag = 0;
+                                }
+                                tts_stop_flag = 1;
+                            }
+                            if (tts_stop_flag==1) {
+                                if(lastDiaryData.size()==0){
+                                    textToSpeech.speak("작성한 일기가 없습니다.", TextToSpeech.QUEUE_FLUSH, null);
+                                    tts_stop_flag=0;
+                                }
+                                else {
+                                    textToSpeech.speak("내용을 불러올 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
+                                    tts_stop_flag = 0;
+                                    stop_flag=0;
+                                    handler.postDelayed(new Runnable() {
+                                        public void run() {
+                                                startListening();
+                                                getContentByVoice_flag = 1;
+                                        }
+                                    }, 3000);  // 2000은 2초를 의미합니다.
+                                }
 
+                            }
+                        }
+                    }, 200);
                 }
             }
 
@@ -209,19 +228,40 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
                 last_diary_rcv.setAdapter(lastDiaryAdapter);
 
-                for(int i=0;i<lastDiaryData.size();i++){
+                for(i=0;i<lastDiaryData.size();i++){
                     textToSpeech.speak(lastDiaryData.get(i).last_diary_date, TextToSpeech.QUEUE_ADD, null);
                 }
 
-                stop_flag=0;
-
-                textToSpeech.speak("내용을 불러올 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
                 handler.postDelayed(new Runnable() {
+                    @Override
                     public void run() {
-                        startListening();
-                        getContentByVoice_flag = 1;
+                        if (tts_stop_flag == 0) {
+                            while (textToSpeech.isSpeaking()) {
+                                tts_stop_flag = 0;
+                            }
+                            tts_stop_flag = 1;
+                        }
+                        if (tts_stop_flag==1) {
+                            if(lastDiaryData.size()==0){
+                                textToSpeech.speak("작성한 일기가 없습니다.", TextToSpeech.QUEUE_FLUSH, null);
+                                tts_stop_flag=0;
+                            }
+                            else {
+                                textToSpeech.speak("내용을 불러올 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
+                                tts_stop_flag = 0;
+                                stop_flag=0;
+                                handler.postDelayed(new Runnable() {
+                                    public void run() {
+                                            startListening();
+                                            getContentByVoice_flag = 1;
+                                    }
+                                }, 3000);  // 2000은 2초를 의미합니다.
+                            }
+                        }
                     }
-                }, 2700);  // 2000은 2초를 의미합니다.
+                }, 200);
+
+
 
             }
 
@@ -243,17 +283,38 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                 lastDiaryAdapter = new LastDiaryAdapter(lastDiaryData,LastDiaryActivty.this);
 
                 last_diary_rcv.setAdapter(lastDiaryAdapter);
-                for(int i=0;i<lastDiaryData.size();i++){
+                for(i=0;i<lastDiaryData.size();i++){
                     textToSpeech.speak(lastDiaryData.get(i).last_diary_date, TextToSpeech.QUEUE_ADD, null);
                 }
 
-                textToSpeech.speak("내용을 불러올 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
                 handler.postDelayed(new Runnable() {
+                    @Override
                     public void run() {
-                        startListening();
-                        getContentByVoice_flag = 1;
+                        if (tts_stop_flag == 0) {
+                            while (textToSpeech.isSpeaking()) {
+                                tts_stop_flag = 0;
+                            }
+                            tts_stop_flag = 1;
+                        }
+                        if (tts_stop_flag==1) {
+                            if(lastDiaryData.size()==0){
+                                textToSpeech.speak("작성한 일기가 없습니다.", TextToSpeech.QUEUE_FLUSH, null);
+                                tts_stop_flag=0;
+                            }
+                            else {
+                                textToSpeech.speak("내용을 불러올 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
+                                tts_stop_flag = 0;
+                                stop_flag=0;
+                                handler.postDelayed(new Runnable() {
+                                    public void run() {
+                                            startListening();
+                                            getContentByVoice_flag = 1;
+                                    }
+                                }, 3000);  // 2000은 2초를 의미합니다.
+                            }
+                        }
                     }
-                }, 2700);  // 2000은 2초를 의미합니다.
+                }, 200);
 
             }
 
@@ -286,11 +347,13 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
         i.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(LastDiaryActivty.this);
-        Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
 
         if (PermissionUtils.checkAudioRecordPermission(LastDiaryActivty.this)) {
+            if(stop_flag!=1) {
+                Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
                 speechRecognizer.setRecognitionListener(speechToTextListener);
                 speechRecognizer.startListening(i);
+            }
         }
     }
 
@@ -469,6 +532,22 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                 return true;
             }
         }
+        return false;
+    }
+
+    public Boolean isTTSPlaying(Context mContext){
+
+        ActivityManager manager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if ("com.google.android.voiceinteraction.GsaVoiceInteractionService".equals(service.service.getClassName())) {
+                Log.d("tts확인", "ㅇㅇ");
+                return true;
+            }
+        }
+//        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+//            Log.d("tts확인", service.service.getClassName());
+//        }
         return false;
     }
 
