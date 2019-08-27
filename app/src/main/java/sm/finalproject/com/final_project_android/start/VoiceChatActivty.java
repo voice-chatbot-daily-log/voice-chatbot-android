@@ -63,6 +63,7 @@ import sm.finalproject.com.final_project_android.start.adapter.ChatAdapter;
 import sm.finalproject.com.final_project_android.start.data.ChatData;
 import sm.finalproject.com.final_project_android.start.dialog.SaveDialog;
 import sm.finalproject.com.final_project_android.util.ApplicationController;
+import sm.finalproject.com.final_project_android.util.SharePreferenceController;
 
 import static com.kakao.util.helper.Utility.getPackageInfo;
 
@@ -467,7 +468,8 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                         //Toast.makeText(getApplicationContext(), "해쉬태그 : "+ hashTag, Toast.LENGTH_SHORT).show();
                         //저장하기
 
-                        saveDialog.postSaveLastDiary(1,dialogContext,hashTag);
+
+                        saveDialog.postSaveLastDiary(SharePreferenceController.getUserIdx(VoiceChatActivty.this),dialogContext,hashTag);
 
                     }
                     else { //그냥 대화를 할때 들어가는 곳
@@ -531,13 +533,6 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
                         sttClient.setSpeechRecognizeListener(VoiceChatActivty.this);
 
-
-//                        try {
-//                            Thread.sleep(4000);
-//                            ttsClient.stop();
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
 
                         Log.d("확인2",String.valueOf(ttsClient.isPlaying()));
 

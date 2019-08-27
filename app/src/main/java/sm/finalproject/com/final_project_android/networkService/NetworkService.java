@@ -13,6 +13,8 @@ import sm.finalproject.com.final_project_android.model.PostChatResponse;
 import sm.finalproject.com.final_project_android.model.PostChatResponseData;
 import sm.finalproject.com.final_project_android.model.PostLastDiaryResponse;
 import sm.finalproject.com.final_project_android.model.PostLastDiaryResponseData;
+import sm.finalproject.com.final_project_android.model.PostUserUUIDResponse;
+import sm.finalproject.com.final_project_android.model.PostUserUUIDResponseData;
 import sm.finalproject.com.final_project_android.model.QueryInput;
 
 public interface NetworkService {
@@ -34,6 +36,9 @@ public interface NetworkService {
     @GET("/diary/search/{userIdx}/date/{diaryDate}")
     Call<GetLastDiaryResponse>getLastDiaryByDate(@Path("userIdx") int userIdx,
                                                     @Path("diaryDate") String date);
+
+    @POST("/user/signup")
+    Call<PostUserUUIDResponse>postUserUUID(@Body PostUserUUIDResponseData postUserUUIDResponseData);
 
 
 }

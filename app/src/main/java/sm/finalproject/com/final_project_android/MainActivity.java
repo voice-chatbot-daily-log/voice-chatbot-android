@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -42,15 +43,21 @@ import java.util.UUID;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import sm.finalproject.com.final_project_android.lastdiary.LastDiaryActivty;
 import sm.finalproject.com.final_project_android.lastdiary.adapter.LastDiaryAdapter;
 import sm.finalproject.com.final_project_android.model.PostChatResponse;
 import sm.finalproject.com.final_project_android.model.PostChatResponseData;
+import sm.finalproject.com.final_project_android.model.PostUserUUIDResponse;
+import sm.finalproject.com.final_project_android.model.PostUserUUIDResponseData;
 import sm.finalproject.com.final_project_android.model.QueryInput;
 import sm.finalproject.com.final_project_android.model.QueryInputData;
+import sm.finalproject.com.final_project_android.model.UserIdx;
 import sm.finalproject.com.final_project_android.networkService.NetworkService;
 import sm.finalproject.com.final_project_android.start.VoiceChatActivty;
 import sm.finalproject.com.final_project_android.util.ApplicationController;
+import sm.finalproject.com.final_project_android.util.SharePreferenceController;
 
 import static android.speech.SpeechRecognizer.ERROR_SPEECH_TIMEOUT;
 import static android.speech.SpeechRecognizer.isRecognitionAvailable;
@@ -67,10 +74,29 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
     TextToSpeech tts;
 
+    //통신//
+    Retrofit.Builder builder;
+    NetworkService networkService;
+    Retrofit postUserUUID;
+    //
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //수정's server 통신설정//
+        builder = new Retrofit.Builder();
+
+        postUserUUID = builder
+                .baseUrl("http://13.209.245.84:3000/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        networkService = postUserUUID.create(NetworkService.class);
+        //////
+
 
         btn_start = findViewById(R.id.btn_start);
         btn_record = findViewById(R.id.btn_record);
@@ -289,6 +315,26 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         }
 
     };
+
+    public void getUserIdx(String userUUID){
+        PostUserUUIDResponseData postUserUUIDResponseData = new PostUserUUIDResponseData(userUUID);
+        Call<PostUserUUIDResponse> postUserUUIDResponseCall = networkService.postUserUUID(postUserUUIDResponseData);
+        postUserUUIDResponseCall.enqueue(new Callback<PostUserUUIDResponse>() {
+            @Override
+            public void onResponse(Call<PostUserUUIDResponse> call, Response<PostUserUUIDResponse> response) {
+                if(response.isSuccessful()){
+                    int user_idx = response.body().data.user_idx;
+                    SharePreferenceController.setUserIdx(MainActivity.this,user_idx);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostUserUUIDResponse> call, Throwable t) {
+
+            }
+        });
+
+    }
 
     @Override
     public void onBackPressed() {

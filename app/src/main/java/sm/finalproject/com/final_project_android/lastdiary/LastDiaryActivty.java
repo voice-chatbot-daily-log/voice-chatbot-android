@@ -38,6 +38,7 @@ import sm.finalproject.com.final_project_android.lastdiary.dialog.HashTagDialog;
 import sm.finalproject.com.final_project_android.model.GetLastDiaryResponse;
 import sm.finalproject.com.final_project_android.networkService.NetworkService;
 import sm.finalproject.com.final_project_android.start.VoiceChatActivty;
+import sm.finalproject.com.final_project_android.util.SharePreferenceController;
 
 public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.OnInitListener{
 
@@ -218,7 +219,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
     }
 
     public void getLastDiaryByHashtag(String hashTag){
-        final Call<GetLastDiaryResponse> getLastDiaryResponseByHashtagCall = networkService.getLastDiaryByHashTag(1,hashTag);
+        final Call<GetLastDiaryResponse> getLastDiaryResponseByHashtagCall = networkService.getLastDiaryByHashTag(SharePreferenceController.getUserIdx(LastDiaryActivty.this),hashTag);
         getLastDiaryResponseByHashtagCall.enqueue(new Callback<GetLastDiaryResponse>() {
             @Override
             public void onResponse(Call<GetLastDiaryResponse> call, Response<GetLastDiaryResponse> response) {
@@ -271,7 +272,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
     public void getLastDiaryByDate(String date){
 
-        final Call<GetLastDiaryResponse> getLastDiaryResponseByDateCall = networkService.getLastDiaryByDate(1, date);
+        final Call<GetLastDiaryResponse> getLastDiaryResponseByDateCall = networkService.getLastDiaryByDate(SharePreferenceController.getUserIdx(LastDiaryActivty.this), date);
         getLastDiaryResponseByDateCall.enqueue(new Callback<GetLastDiaryResponse>() {
             @Override
             public void onResponse(Call<GetLastDiaryResponse> call, Response<GetLastDiaryResponse> response) {
@@ -381,8 +382,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
         @Override
         public void onError(int error) {
             String message;
-//            int i=0;
-//            while(i<2){
+
             switch (error) {
                 case SpeechRecognizer.ERROR_AUDIO:
                     message = "오디오 에러";
@@ -433,8 +433,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                     message = "알 수 없는 오류임";
                     break;
             }
-//            i++;
-//            }
+
         }
 
         @Override
