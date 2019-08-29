@@ -35,6 +35,7 @@ import sm.finalproject.com.final_project_android.lastdiary.adapter.LastDiaryAdap
 import sm.finalproject.com.final_project_android.lastdiary.data.LastDiaryData;
 import sm.finalproject.com.final_project_android.lastdiary.dialog.DateDialog;
 import sm.finalproject.com.final_project_android.lastdiary.dialog.HashTagDialog;
+import sm.finalproject.com.final_project_android.model.DeleteLastDiaryResponseData;
 import sm.finalproject.com.final_project_android.model.GetLastDiaryResponse;
 import sm.finalproject.com.final_project_android.networkService.NetworkService;
 import sm.finalproject.com.final_project_android.start.VoiceChatActivty;
@@ -52,6 +53,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
     Button btn_search_date;
     Button btn_search_tag;
     Button btn_search_all;
+    Button btn_delete;
 
     TextToSpeech textToSpeech;
     SpeechRecognizer speechRecognizer;
@@ -85,6 +87,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
         btn_search_date=findViewById(R.id.btn_search_date);
         btn_search_tag=findViewById(R.id.btn_search_tag);
         btn_search_all=findViewById(R.id.btn_search_all);
+        btn_delete=findViewById(R.id.btn_delete);
 
         dateDialog = new DateDialog(this);
         hashTagDialog = new HashTagDialog(this);
@@ -162,10 +165,23 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             }
         });
 
+        btn_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textToSpeech.stop();
+                if(isSTTPlaying(LastDiaryActivty.this)){
+                    speechRecognizer.cancel();
+                }
+                else{
+                    stop_flag=1;
+                }
+            }
+        });
+
     }
 
     public void getLastDiary(){
-        final Call<GetLastDiaryResponse> getLastDiaryResponseCall = networkService.getLastDiary(1);
+        final Call<GetLastDiaryResponse> getLastDiaryResponseCall = networkService.getLastDiary(SharePreferenceController.getUserIdx(LastDiaryActivty.this));
         getLastDiaryResponseCall.enqueue(new Callback<GetLastDiaryResponse>() {
             @Override
             public void onResponse(Call<GetLastDiaryResponse> call, Response<GetLastDiaryResponse> response) {
@@ -312,6 +328,53 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                         }
                     }
                 }, 200);
+            }
+
+            @Override
+            public void onFailure(Call<GetLastDiaryResponse> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    public void deleteLastDiary(String date, int flag){
+        DeleteLastDiaryResponseData deleteLastDiaryResponseData = new DeleteLastDiaryResponseData(SharePreferenceController.getUserIdx(LastDiaryActivty.this), date, flag);
+        final Call<GetLastDiaryResponse> getLastDiaryResponseCall = networkService.deleteLastDiary(deleteLastDiaryResponseData);
+        getLastDiaryResponseCall.enqueue(new Callback<GetLastDiaryResponse>() {
+            @Override
+            public void onResponse(Call<GetLastDiaryResponse> call, Response<GetLastDiaryResponse> response) {
+                if(response.isSuccessful()){
+
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (tts_stop_flag == 0) {
+                                while (textToSpeech.isSpeaking()) {
+                                    tts_stop_flag = 0;
+                                }
+                                tts_stop_flag = 1;
+                            }
+                            if (tts_stop_flag==1) {
+                                if(lastDiaryData.size()==0){
+                                    textToSpeech.speak("작성한 일기가 없습니다.", TextToSpeech.QUEUE_FLUSH, null);
+                                    tts_stop_flag=0;
+                                }
+                                else {
+                                    textToSpeech.speak("내용을 불러올 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
+                                    tts_stop_flag = 0;
+                                    stop_flag=0;
+                                    handler.postDelayed(new Runnable() {
+                                        public void run() {
+                                            startListening();
+                                            getContentByVoice_flag = 1;
+                                        }
+                                    }, 3000);  // 2000은 2초를 의미합니다.
+                                }
+                            }
+                        }
+                    }, 200);
+                }
             }
 
             @Override

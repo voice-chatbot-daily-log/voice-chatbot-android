@@ -3,11 +3,13 @@ package sm.finalproject.com.final_project_android.networkService;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import sm.finalproject.com.final_project_android.lastdiary.data.LastDiaryData;
+import sm.finalproject.com.final_project_android.model.DeleteLastDiaryResponseData;
 import sm.finalproject.com.final_project_android.model.GetLastDiaryResponse;
 import sm.finalproject.com.final_project_android.model.PostChatResponse;
 import sm.finalproject.com.final_project_android.model.PostChatResponseData;
@@ -39,6 +41,10 @@ public interface NetworkService {
 
     @POST("/user/signup")
     Call<PostUserUUIDResponse>postUserUUID(@Body PostUserUUIDResponseData postUserUUIDResponseData);
+
+    @DELETE("/")
+    Call<GetLastDiaryResponse>deleteLastDiary(@Body DeleteLastDiaryResponseData deleteLastDiaryResponseData);
+
 
 
 }
