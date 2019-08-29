@@ -105,10 +105,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         tts = new TextToSpeech(this, this);
 
 
-        if(SharePreferenceController.getUserFlag(MainActivity.this)==0){
-            getUserIdx(getDevicesUUID(MainActivity.this));
-            SharePreferenceController.setUserIdx(MainActivity.this,1);
-        }
+        getUserIdx(getDevicesUUID(MainActivity.this));
+
 
 
         handler.postDelayed(new Runnable() {

@@ -20,17 +20,5 @@ public class SharePreferenceController {
         return user_idx;
     }
 
-    public static void setUserFlag(Context context, int flag){
-        SharedPreferences pref = context.getSharedPreferences(USER_FLAG,Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putInt(USER_FLAG,flag);
-        editor.commit();
-    }
-
-    public static int getUserFlag(Context context){
-        SharedPreferences pref = context.getSharedPreferences(USER_FLAG,Context.MODE_PRIVATE);
-        int user_flag = pref.getInt(USER_FLAG,0);
-        return user_flag;
-    }
 
 }
