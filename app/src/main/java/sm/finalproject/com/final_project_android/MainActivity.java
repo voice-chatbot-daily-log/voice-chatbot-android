@@ -327,6 +327,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             public void onResponse(Call<PostUserUUIDResponse> call, Response<PostUserUUIDResponse> response) {
                 if(response.isSuccessful()){
                     int user_idx = response.body().data.user_idx;
+                    Log.d("Fsdfsfsdfs",Integer.toString(user_idx));
                     SharePreferenceController.setUserIdx(MainActivity.this,user_idx);
                 }
             }

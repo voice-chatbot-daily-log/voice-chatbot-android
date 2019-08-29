@@ -5,6 +5,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.HTTP;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -42,7 +43,7 @@ public interface NetworkService {
     @POST("/user/signup")
     Call<PostUserUUIDResponse>postUserUUID(@Body PostUserUUIDResponseData postUserUUIDResponseData);
 
-    @DELETE("/")
+    @HTTP(method = "DELETE", path = "/diary", hasBody = true)
     Call<GetLastDiaryResponse>deleteLastDiary(@Body DeleteLastDiaryResponseData deleteLastDiaryResponseData);
 
 
