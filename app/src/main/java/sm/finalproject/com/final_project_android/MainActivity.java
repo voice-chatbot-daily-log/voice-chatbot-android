@@ -104,7 +104,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
         tts = new TextToSpeech(this, this);
 
-        getDevicesUUID(MainActivity.this);
+
+        getUserIdx(getDevicesUUID(MainActivity.this));
 
         handler.postDelayed(new Runnable() {
             public void run() {
