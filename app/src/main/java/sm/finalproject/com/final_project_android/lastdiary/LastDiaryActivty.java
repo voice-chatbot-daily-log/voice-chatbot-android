@@ -122,7 +122,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                 //textToSpeech.stop();
                     startListening();
             }
-        }, 8700);  // 2000은 2초를 의미합니다.
+        }, 10000);  // 2000은 2초를 의미합니다.
 
 
         btn_search_all.setOnClickListener(new View.OnClickListener() {
@@ -352,41 +352,16 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             @Override
             public void onResponse(Call<GetLastDiaryResponse> call, Response<GetLastDiaryResponse> response) {
                 if(response.isSuccessful()){
-//
-//                    handler.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            if (tts_stop_flag == 0) {
-//                                while (textToSpeech.isSpeaking()) {
-//                                    tts_stop_flag = 0;
-//                                }
-//                                tts_stop_flag = 1;
-//                            }
-//                            if (tts_stop_flag==1) {
-//                                if(lastDiaryData.size()==0){
-//                                    textToSpeech.speak("작성한 일기가 없습니다.", TextToSpeech.QUEUE_FLUSH, null);
-//                                    tts_stop_flag=0;
-//                                }
-//                                else {
-//                                    textToSpeech.speak("내용을 불러올 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
-//                                    tts_stop_flag = 0;
-//                                    stop_flag=0;
-//                                    handler.postDelayed(new Runnable() {
-//                                        public void run() {
-//                                            startListening();
-//                                            getContentByVoice_flag = 1;
-//                                        }
-//                                    }, 3000);  // 2000은 2초를 의미합니다.
-//                                }
-//                            }
-//                        }
-//                    }, 200);
+
                     if(response.body().message.equals("해당 데이터가 존재하지 않습니다.")){
                         //Toast.makeText(getApplicationContext(), "데이터 존재하지 않음", Toast.LENGTH_SHORT).show();
                         textToSpeech.speak("날짜에 해당하는 일기가 존재하지 않습니다.", TextToSpeech.QUEUE_FLUSH, null);
+
+
                     }else{
 //                        Toast.makeText(getApplicationContext(), "삭제완료", Toast.LENGTH_SHORT).show();
-                        textToSpeech.speak("삭제가 완료되었습니다.", TextToSpeech.QUEUE_FLUSH, null);
+                          textToSpeech.speak("삭제가 완료되었습니다.", TextToSpeech.QUEUE_FLUSH, null);
+
                     }
 
                 }
@@ -549,14 +524,14 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             }
             else if(inputText.equals("삭제")) {
                 Toast.makeText(getApplicationContext(), "삭제하기", Toast.LENGTH_SHORT).show();
-                textToSpeech.speak("전체를 삭제하시려면 전체삭제, 일부를 삭제하시려면 일부삭제라고 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
+                textToSpeech.speak("전체를 삭제하시려면 전체, 일부를 삭제하시려면 일부라고 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
                 handler.postDelayed(new Runnable() {
                     public void run() {
                         startListening();
                         first_delete_flag = 1;
 
                     }
-                }, 5000);  // 2000은 2초를 의미합니다.
+                }, 5200);  // 2000은 2초를 의미합니다.
 
             }
             else if(searchByTag_flag==0 && searchByDate_flag==0 && searchAll_flag==0 && first_delete_flag == 0 && second_delete_flag == 0){
@@ -581,32 +556,45 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             if(searchByTag_flag == 1){//태그로 검색시 stt
                 getLastDiaryByHashtag(inputText);
             }
-            if(first_delete_flag == 1){//전체 삭제 혹은 일부 삭제일때
-                if(inputText.equals("전체 삭제")){//전체 삭제
 
-                    deleteLastDiary(" ",0);
+            if(first_delete_flag == 1) {//전체 삭제 혹은 일부 삭제일때
+                if (inputText.equals("전체")) {//전체 삭제
 
-                }else{ //일부 삭제 tts & stt
+                    deleteLastDiary(" ", 0);
+                    first_delete_flag=0;
+
+                } else if (inputText.equals("일부")) { //일부 삭제 tts & stt
 
                     textToSpeech.speak("삭제할 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
                     handler.postDelayed(new Runnable() {
                         public void run() {
                             startListening();
+                            Log.d("어디?", "1");
+                            first_delete_flag =0;
                             second_delete_flag = 1;
 
                         }
                     }, 2200);  // 2000은 2초를 의미합니다.
 
+                } else {
+                    textToSpeech.speak("다시 말해주세요", TextToSpeech.QUEUE_FLUSH, null);
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            textToSpeech.stop();
+                            Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                            startListening();
+                            Log.d("어디?", "2");
+                        }
+                    }, 1800);  // 2000은 2초를 의미합니다.
+
                 }
+            }
+
                 if(second_delete_flag == 1){//일부 삭제
                     deleteLastDiary(inputText,1);
-
                 }
 
             }
-
-
-        }
 
         @Override
         public void onPartialResults(Bundle partialResults) {
