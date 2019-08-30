@@ -84,6 +84,8 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
     int tts_stop_flag=0;
     int i;
 
+    int go_back_flag=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -214,8 +216,15 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                             }
                             if (tts_stop_flag==1) {
                                 if(lastDiaryData.size()==0){
-                                    textToSpeech.speak("작성한 일기가 없습니다.", TextToSpeech.QUEUE_FLUSH, null);
+                                    textToSpeech.speak("작성한 일기가 없습니다. 첫화면으로 가려면 첫화면, 뒤로 가려면 뒤로 라고 말해주세요", TextToSpeech.QUEUE_FLUSH, null);
                                     tts_stop_flag=0;
+                                    go_back_flag=1;
+                                    handler.postDelayed(new Runnable() {
+                                        public void run() {
+                                            startListening();
+
+                                        }
+                                    }, 7500);  // 2000은 2초를 의미합니다.
                                 }
                                 else {
                                     textToSpeech.speak("내용을 불러올 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
@@ -266,8 +275,14 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                         }
                         if (tts_stop_flag==1) {
                             if(lastDiaryData.size()==0){
-                                textToSpeech.speak("작성한 일기가 없습니다.", TextToSpeech.QUEUE_FLUSH, null);
+                                textToSpeech.speak("작성한 일기가 없습니다. 첫화면으로 가려면 첫화면, 뒤로 가려면 뒤로 라고 말해주세요", TextToSpeech.QUEUE_FLUSH, null);
                                 tts_stop_flag=0;
+                                go_back_flag=1;
+                                handler.postDelayed(new Runnable() {
+                                    public void run() {
+                                        startListening();
+                                    }
+                                }, 7500);  // 2000은 2초를 의미합니다.
                             }
                             else {
                                 textToSpeech.speak("내용을 불러올 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
@@ -318,8 +333,14 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                         }
                         if (tts_stop_flag==1) {
                             if(lastDiaryData.size()==0){
-                                textToSpeech.speak("작성한 일기가 없습니다.", TextToSpeech.QUEUE_FLUSH, null);
+                                textToSpeech.speak("작성한 일기가 없습니다. 첫화면으로 가려면 첫화면, 뒤로 가려면 뒤로 라고 말해주세요", TextToSpeech.QUEUE_FLUSH, null);
                                 tts_stop_flag=0;
+                                go_back_flag=1;
+                                handler.postDelayed(new Runnable() {
+                                    public void run() {
+                                        startListening();
+                                    }
+                                }, 7500);  // 2000은 2초를 의미합니다.
                             }
                             else {
                                 textToSpeech.speak("내용을 불러올 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
@@ -357,13 +378,28 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                         //Toast.makeText(getApplicationContext(), "데이터 존재하지 않음", Toast.LENGTH_SHORT).show();
                         textToSpeech.speak("날짜에 해당하는 일기가 존재하지 않습니다.", TextToSpeech.QUEUE_FLUSH, null);
 
-
                     }else{
 //                        Toast.makeText(getApplicationContext(), "삭제완료", Toast.LENGTH_SHORT).show();
                           textToSpeech.speak("삭제가 완료되었습니다.", TextToSpeech.QUEUE_FLUSH, null);
-
                     }
 
+                    if (tts_stop_flag == 0) {
+                        while (textToSpeech.isSpeaking()) {
+                            tts_stop_flag = 0;
+                        }
+                        tts_stop_flag = 1;
+                    }
+
+                    if (tts_stop_flag == 1) {
+                        go_back_flag=1;
+                        textToSpeech.speak("첫화면으로 가려면 첫화면, 뒤로 가려면 뒤로 라고 말해주세요", TextToSpeech.QUEUE_FLUSH, null);
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                                startListening();
+
+                            }
+                        }, 5200);  // 2000은 2초를 의미합니다.
+                    }
                 }
             }
 
@@ -454,7 +490,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                     break;
                 case SpeechRecognizer.ERROR_NO_MATCH:
                     String sttError1 = "다시 말해주세요.";
-                    //textToSpeech.speak(sttError1, TextToSpeech.QUEUE_FLUSH, null);
+                    textToSpeech.speak(sttError1, TextToSpeech.QUEUE_FLUSH, null);
 
                     handler.postDelayed(new Runnable() {
                         public void run() {
@@ -472,7 +508,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                     break;
                 case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
                     String sttError2 = "다시 말해주세요.";
-                    //textToSpeech.speak(sttError2, TextToSpeech.QUEUE_FLUSH, null);
+                    textToSpeech.speak(sttError2, TextToSpeech.QUEUE_FLUSH, null);
 
                     handler.postDelayed(new Runnable() {
                         public void run() {
@@ -524,14 +560,14 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             }
             else if(inputText.equals("삭제")) {
                 Toast.makeText(getApplicationContext(), "삭제하기", Toast.LENGTH_SHORT).show();
-                textToSpeech.speak("전체를 삭제하시려면 전체, 일부를 삭제하시려면 일부라고 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
+                textToSpeech.speak("전체를 삭제하시려면 전체 삭제, 일부를 삭제하시려면 일부 삭제라고 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
                 handler.postDelayed(new Runnable() {
                     public void run() {
                         startListening();
                         first_delete_flag = 1;
 
                     }
-                }, 5200);  // 2000은 2초를 의미합니다.
+                }, 6000);  // 2000은 2초를 의미합니다.
 
             }
             else if(searchByTag_flag==0 && searchByDate_flag==0 && searchAll_flag==0 && first_delete_flag == 0 && second_delete_flag == 0){
@@ -558,18 +594,17 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             }
 
             if(first_delete_flag == 1) {//전체 삭제 혹은 일부 삭제일때
-                if (inputText.equals("전체")) {//전체 삭제
+                if (inputText.equals("전체 삭제")) {//전체 삭제
 
                     deleteLastDiary(" ", 0);
                     first_delete_flag=0;
 
-                } else if (inputText.equals("일부")) { //일부 삭제 tts & stt
+                } else if (inputText.equals("일부 삭제")) { //일부 삭제 tts & stt
 
                     textToSpeech.speak("삭제할 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
                     handler.postDelayed(new Runnable() {
                         public void run() {
                             startListening();
-                            Log.d("어디?", "1");
                             first_delete_flag =0;
                             second_delete_flag = 1;
 
@@ -583,10 +618,8 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                             textToSpeech.stop();
                             Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
                             startListening();
-                            Log.d("어디?", "2");
                         }
                     }, 1800);  // 2000은 2초를 의미합니다.
-
                 }
             }
 
@@ -594,7 +627,27 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                     deleteLastDiary(inputText,1);
                 }
 
-            }
+                if(go_back_flag==1) {
+                    if (inputText.equals("첫 화면")) {
+                        Intent intent = new Intent(LastDiaryActivty.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else if (inputText.equals("뒤로")) {
+                        Intent intent = new Intent(LastDiaryActivty.this, LastDiaryActivty.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        textToSpeech.speak("다시 말해주세요", TextToSpeech.QUEUE_FLUSH, null);
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                                textToSpeech.stop();
+                                Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                                startListening();
+                            }
+                        }, 1800);  // 2000은 2초를 의미합니다.
+                    }
+                }
+        }
 
         @Override
         public void onPartialResults(Bundle partialResults) {
