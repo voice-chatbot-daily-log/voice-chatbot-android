@@ -82,7 +82,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
     private static final int REQUEST_CODE_AUDIO_AND_WRITE_EXTERNAL_STORAGE = 0;
     final String auth_head = "Bearer ";
-    final String auth_body = "ya29.c.El91Bxw5iHkkjUykfeAOOl-IwqUcwd8NisNtbEUM8iuPPJ6MDMN3MBjYOClNTYWQdcvYmTe4OByBifY_Hl_YjnLTkttduF1koKRoTbLJ9bKvBWH9wRVh5181k5zqPT8zYg";
+    final String auth_body = "ya29.c.El91B99zwjbYbYp_hpq4c6GlYwqgdXgQUu-E8IqS6L5eTOzz0rljf2HV73IStfEgpEnj52aw4w0v9J2PdQiZhgUQibeTj_dWNi3B0gxDFzyhyoh_ZLyKHYAOHjl65A63Ag";
 
     Handler handler;
 
@@ -107,6 +107,8 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
     public EditText editText;
 
+    int cancel_flag=0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,8 +127,6 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
         chatData = new ArrayList<>();
 
         saveDialog = new SaveDialog(this,dialogContext);
-
-        //chatData.add(new ChatData("첫시작",1));
 
 
         //다음 open api 통신 설정//
@@ -161,18 +161,9 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                 .setListener(VoiceChatActivty.this)
                 .build();
 
-
-
         ////////////////
 
-
-
-
-
-
-
         postInputText(auth_head+auth_body,"첫시작");
-
 
         ////////동적 권한 부여 코드///////////
 
@@ -183,12 +174,10 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                 // 유저가 거부하면서 다시 묻지 않기를 클릭.. 권한이 없다고 유저에게 직접 알림.
             }
         } else {
-            // startUsingSpeechSDK();
+
         }
 
         ////////동적 권한 부여 코드 끝////////////
-
-
 
     }//onCreate() 끝
 
@@ -197,7 +186,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
         switch (requestCode) {
             case REQUEST_CODE_AUDIO_AND_WRITE_EXTERNAL_STORAGE:
                 if (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    //startUsingSpeechSDK();
+
                 } else {
                     finish();
                 }
@@ -216,13 +205,6 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
     @Override
     public void onFinished() {
-
-//        int intSentSize = ttsClient.getSentDataSize();      //세션 중에 전송한 데이터 사이즈
-//        int intRecvSize = ttsClient.getReceivedDataSize();  //세션 중에 전송받은 데이터 사이즈
-//
-//        final String strInacctiveText = "handleFinished() SentSize : " + intSentSize + "  RecvSize : " + intRecvSize;
-//
-//        Log.i("ㅇ", strInacctiveText);
 
     }
 
@@ -263,43 +245,58 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                 break;
             case SpeechRecognizerClient.ERROR_SERVER_TIMEOUT:
                 message ="서버 응답 시간이 초과한 경우";
-                String sttError1 = "다시 말해주세요.";
-                ttsClient.play(sttError1);
+                if(cancel_flag==1){
+                    sttClient.cancelRecording();
+                }
+                else {
+                    String sttError1 = "다시 말해주세요.";
+                    ttsClient.play(sttError1);
 
-                handler.postDelayed(new Runnable() {
-                    public void run() {
-                        ttsClient.stop();
-                        Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
-                        sttClient.startRecording(false);
-                    }
-                }, 1800);  // 2000은 2초를 의미합니다.
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            ttsClient.stop();
+                            Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                            sttClient.startRecording(false);
+                        }
+                    }, 1800);  // 2000은 2초를 의미합니다.
+                }
                 break;
             case SpeechRecognizerClient.ERROR_NO_RESULT:
                 message = "인식된 결과 목록이 없는 경우";
-                String sttError3 = "다시 말해주세요.";
-                ttsClient.play(sttError3);
+                if(cancel_flag==1){
+                    sttClient.cancelRecording();
+                }
+                else {
+                    String sttError3 = "다시 말해주세요.";
+                    ttsClient.play(sttError3);
 
-                handler.postDelayed(new Runnable() {
-                    public void run() {
-                        ttsClient.stop();
-                        sttClient.startRecording(false);
-                    }
-                }, 1800);  // 2000은 2초를 의미합니다.
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            ttsClient.stop();
+                            sttClient.startRecording(false);
+                        }
+                    }, 1800);  // 2000은 2초를 의미합니다.
+                }
 
                 break;
             case SpeechRecognizerClient.ERROR_CLIENT:
                 message = "클라이언트 내부 로직에서 오류가 발생한 경우";
                 break;
             case SpeechRecognizerClient.ERROR_RECOGNITION_TIMEOUT:
-                String sttError2 = "다시 말해주세요.";
-                ttsClient.play(sttError2);
+                if(cancel_flag==1){
+                    sttClient.cancelRecording();
+                }
+                else {
+                    String sttError2 = "다시 말해주세요.";
+                    ttsClient.play(sttError2);
 
-                handler.postDelayed(new Runnable() {
-                    public void run() {
-                        ttsClient.stop();
-                        sttClient.startRecording(false);
-                    }
-                }, 1800);  // 2000은 2초를 의미합니다.
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            ttsClient.stop();
+                            sttClient.startRecording(false);
+                        }
+                    }, 1800);  // 2000은 2초를 의미합니다.
+                }
                 break;
             case SpeechRecognizerClient.ERROR_SERVER_UNSUPPORT_SERVICE:
                 message = "전체 소요시간에 대한 타임아웃이 발생한 경우.";
@@ -349,8 +346,6 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                 String inputText = texts.get(0);
                 if (activity.isFinishing()) return;
                 Log.d("확인3",String.valueOf(ttsClient.isPlaying()));
-               // tv_result.setText(inputText);
-               // Toast.makeText(getApplicationContext(),inputText, Toast.LENGTH_SHORT).show();
 
                 if(inputText.equals("송이야")){
                     menu_flag=1;
@@ -371,7 +366,6 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                     }
 
                     else if (inputText.equals("지난 일기 불러오기") || inputText.equals("지난1기") || inputText.equals("지난 일기") || inputText.equals("지난 1기")) {
-                        //Toast.makeText(getApplicationContext(), "지난 일기 보기", Toast.LENGTH_SHORT).show();
                         sttClient.stopRecording();
 
                         String q_save = "저장하시겠습니까? 네 또는 아니요 라고 말해주세요.";
@@ -411,31 +405,12 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                         menu_flag = 0;
                         save_flag = -1;
 
-                        //Toast.makeText(getApplicationContext(), "저장ㅇㄹ", Toast.LENGTH_SHORT).show();
-                        //Intent intent = new Intent(VoiceChatActivty.this, MainActivity.class);
-                        //startActivity(intent);
-
                     }
 
                     else{ //3개 메뉴가 아닌 것을 말했을 때 들어 오는 곳
                         Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
-//                        handler.postDelayed(new Runnable() {
-//                            public void run() {
-//                                ttsClient.play("다시 말씀해주세요.");
-//                            }
-//                        }, 15000);  // 2000은 2초를 의미합니다.
-
-
-//                        handler.postDelayed(new Runnable() {
-//                            public void run() {
-//                                ttsClient.stop();
-//                                sttClient.startRecording(false);
-//                            }
-//                        }, 3000);  // 2000은 2초를 의미합니다.
-
                         menu_flag =1;
 
-                      // sttClient.startRecording(false);
                     }
 
                 }
@@ -461,10 +436,6 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                             menu_flag = 0;
                             save_flag = -1;
 
-
-                            //Toast.makeText(getApplicationContext(), "저장ㅇㄹ", Toast.LENGTH_SHORT).show();
-
-                            //저장하는 코드 삽입해야함
                         }
                         else if(inputText.equals("아니요")){
                             Toast.makeText(getApplicationContext(), "저장안함", Toast.LENGTH_SHORT).show();
@@ -473,10 +444,8 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                     else if(save_flag == -1){ //해쉬태그 입력
                         hashTag = inputText;
                         saveDialog.setEditText(hashTag);
-                        //Toast.makeText(getApplicationContext(), "해쉬태그 : "+ hashTag, Toast.LENGTH_SHORT).show();
+
                         //저장하기
-
-
                         saveDialog.postSaveLastDiary(SharePreferenceController.getUserIdx(VoiceChatActivty.this),dialogContext,hashTag);
 
                     }
@@ -491,8 +460,6 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                 }
             }
         });
-
-
 
     }
 
@@ -515,7 +482,6 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
             @Override
             public void onResponse(Call<PostChatResponse> call, Response<PostChatResponse> response) {
                 if(response.isSuccessful()) { //사용자의 응답을 받고 DialogFlow가 응답을 나타내는 곳
-                    //Toast.makeText(getApplicationContext(),response.body().queryResult.fulfillmentText,Toast.LENGTH_LONG).show();
                     first_start_msg = response.body().queryResult.fulfillmentText;
                     if (first_start_msg.equals("안녕?")) {
                         dialogContext += "챗봇 : "+first_start_msg + "<br/>";
@@ -544,14 +510,11 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
                         Log.d("확인2",String.valueOf(ttsClient.isPlaying()));
 
-
-                        sttClient.startRecording(false);
-
-
+                        if(cancel_flag!=1) {
+                            sttClient.startRecording(false);
+                        }
                     }
                 }
-
-
 
             }
 
@@ -586,6 +549,8 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
     public void btnMethod(View v) {
 
+        cancel_flag=1;
+
         saveDialog = new SaveDialog(this, dialogContext);
 
         QuestionDialog questionDialog = new QuestionDialog(VoiceChatActivty.this,dialogContext);
@@ -599,8 +564,6 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
         if(editText.getText().toString().equals("저장하기")){
             saveDialog = new SaveDialog(this, dialogContext);
             saveDialog.show();
-//            hashTag = saveDialog.getEditText();
-//            saveDialog.postSaveLastDiary(SharePreferenceController.getUserIdx(VoiceChatActivty.this),dialogContext,hashTag);
 
         }else if(editText.getText().toString().equals("지난 일기")){
             questionDialog.show();

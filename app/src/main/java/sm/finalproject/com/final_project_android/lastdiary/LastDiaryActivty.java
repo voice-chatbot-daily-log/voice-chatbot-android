@@ -121,7 +121,6 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
         handler.postDelayed(new Runnable() {
             public void run() {
-                //textToSpeech.stop();
                     startListening();
             }
         }, 10000);  // 2000은 2초를 의미합니다.
@@ -375,11 +374,9 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                 if(response.isSuccessful()){
 
                     if(response.body().message.equals("해당 데이터가 존재하지 않습니다.")){
-                        //Toast.makeText(getApplicationContext(), "데이터 존재하지 않음", Toast.LENGTH_SHORT).show();
                         textToSpeech.speak("날짜에 해당하는 일기가 존재하지 않습니다.", TextToSpeech.QUEUE_FLUSH, null);
 
                     }else{
-//                        Toast.makeText(getApplicationContext(), "삭제완료", Toast.LENGTH_SHORT).show();
                           textToSpeech.speak("삭제가 완료되었습니다.", TextToSpeech.QUEUE_FLUSH, null);
                     }
 
@@ -533,7 +530,6 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
 
             if (inputText.equals("날짜")) {
-                //Toast.makeText(getApplicationContext(), "날짜로 검색", Toast.LENGTH_SHORT).show();
                 textToSpeech.speak("날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
                 handler.postDelayed(new Runnable() {
                     public void run() {

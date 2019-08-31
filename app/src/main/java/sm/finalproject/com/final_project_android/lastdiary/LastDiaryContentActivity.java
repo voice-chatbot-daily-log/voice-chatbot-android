@@ -53,7 +53,6 @@ public class LastDiaryContentActivity extends AppCompatActivity implements TextT
 
         for(int i=0; i<array.length; i++){
             tv_last_diary_content.append("\n"+ array[i]);
-            //Log.d("Test", "text= "+array[i]);
         }
 
     }
@@ -64,7 +63,7 @@ public class LastDiaryContentActivity extends AppCompatActivity implements TextT
 
         HashMap<String, String> map = new HashMap<String, String>();
         map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "UniqueID");
-        
+
         diary_tts.speak(tv_last_diary_content.getText().toString(), TextToSpeech.QUEUE_FLUSH, map);
 
         diary_tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
