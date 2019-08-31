@@ -8,8 +8,10 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -26,6 +28,7 @@ import sm.finalproject.com.final_project_android.model.PostLastDiaryResponse;
 import sm.finalproject.com.final_project_android.model.PostLastDiaryResponseData;
 import sm.finalproject.com.final_project_android.networkService.NetworkService;
 import sm.finalproject.com.final_project_android.start.VoiceChatActivty;
+import sm.finalproject.com.final_project_android.util.SharePreferenceController;
 
 public class SaveDialog extends Dialog {
 
@@ -38,7 +41,10 @@ public class SaveDialog extends Dialog {
     Activity mActivty;
 
     EditText et_hashTag;
-    public SaveDialog(@NonNull Activity activity) {
+
+    ImageView btn_save;
+
+    public SaveDialog(@NonNull Activity activity, final String dialogContext) {
         super(activity);
 
         mActivty = activity;
@@ -55,10 +61,25 @@ public class SaveDialog extends Dialog {
                 .build();
         //////
 
+        btn_save = findViewById(R.id.btn_save);
+
         et_hashTag = findViewById(R.id.et_hashtag);
+
+        btn_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                postSaveLastDiary(SharePreferenceController.getUserIdx(getContext()),dialogContext,et_hashTag.getText().toString());
+                dismiss();
+            }
+        });
+
     }
     public void setEditText(String hashtag){
         et_hashTag.setText(hashtag);
+    }
+    public String getEditText(){
+        return et_hashTag.getText().toString();
     }
 
     public void postSaveLastDiary(int userIdx, final String content, String hashTag){
@@ -72,6 +93,8 @@ public class SaveDialog extends Dialog {
 
         PostLastDiaryResponseData postLastDiaryResponseData = new PostLastDiaryResponseData(userIdx,content,realDate,hashTag);
 
+
+
         networkService = saveDiaryNetwork.create(NetworkService.class);
 
         final Call<PostLastDiaryResponse> postLastDiaryResponseCall = networkService.postLastDiary(postLastDiaryResponseData);
@@ -84,9 +107,6 @@ public class SaveDialog extends Dialog {
                     Intent intent = new Intent(mActivty, MainActivity.class);
                     mActivty.startActivity(intent);
                     mActivty.finish();
-
-
-
 
                 }else{
                     Log.d("통신에러", "에러남?");

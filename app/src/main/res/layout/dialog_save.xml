@@ -23,6 +23,7 @@
             android:layout_width="200dp"
             android:layout_height="50dp" />
         <ImageView
+            android:id="@+id/btn_save"
             android:layout_marginLeft="15dp"
             android:layout_toRightOf="@+id/et_hashtag"
             android:layout_width="50dp"
