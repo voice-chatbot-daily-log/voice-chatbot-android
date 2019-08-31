@@ -168,7 +168,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     private void startListening() {
 
         Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        //intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
         i.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
 
@@ -345,7 +344,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         super.onBackPressed();
 
         ActivityCompat.finishAffinity(this);
-        //System.exit(0);
 
     }
 }
