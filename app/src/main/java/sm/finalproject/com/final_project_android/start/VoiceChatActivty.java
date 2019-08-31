@@ -24,6 +24,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -61,6 +62,7 @@ import sm.finalproject.com.final_project_android.model.QueryInputData;
 import sm.finalproject.com.final_project_android.networkService.NetworkService;
 import sm.finalproject.com.final_project_android.start.adapter.ChatAdapter;
 import sm.finalproject.com.final_project_android.start.data.ChatData;
+import sm.finalproject.com.final_project_android.start.dialog.QuestionDialog;
 import sm.finalproject.com.final_project_android.start.dialog.SaveDialog;
 import sm.finalproject.com.final_project_android.util.ApplicationController;
 import sm.finalproject.com.final_project_android.util.SharePreferenceController;
@@ -80,7 +82,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
     private static final int REQUEST_CODE_AUDIO_AND_WRITE_EXTERNAL_STORAGE = 0;
     final String auth_head = "Bearer ";
-    final String auth_body = "ya29.c.El90Bwf3PTPdzrv69fLjH6VyC392wsx9lYC1ErAJo2xuZ-hwoye7mVhNEamHCFib4VhJWhvDmQ_gPG5fI78zK-d2JpbuuYRrmJRTPawTb2Yh30o3kp63uLmWOX26pDi0lw";
+    final String auth_body = "ya29.c.El91Bxw5iHkkjUykfeAOOl-IwqUcwd8NisNtbEUM8iuPPJ6MDMN3MBjYOClNTYWQdcvYmTe4OByBifY_Hl_YjnLTkttduF1koKRoTbLJ9bKvBWH9wRVh5181k5zqPT8zYg";
 
     Handler handler;
 
@@ -103,6 +105,8 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
     public int menu_flag=0;
     public int save_flag=0;
 
+    public EditText editText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +124,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
         chatData = new ArrayList<>();
 
-        saveDialog = new SaveDialog(this);
+        saveDialog = new SaveDialog(this,dialogContext);
 
         //chatData.add(new ChatData("첫시작",1));
 
@@ -136,6 +140,8 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
         ////////////////////////////////
 
         dialogContext = " "; //대화 전체를 받아올 변수
+
+        editText = findViewById(R.id.editText);
 
 
 
@@ -158,6 +164,8 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
 
         ////////////////
+
+
 
 
 
@@ -578,8 +586,38 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
     public void btnMethod(View v) {
 
+        saveDialog = new SaveDialog(this, dialogContext);
+
+        QuestionDialog questionDialog = new QuestionDialog(VoiceChatActivty.this,dialogContext);
 
 
+        Log.d("에딧텍스트 값 확인",editText.getText().toString());
+
+        chatData.add(new ChatData(editText.getText().toString(), 1));
+        chat_rcv.setAdapter(chatAdapter);
+
+        if(editText.getText().toString().equals("저장하기")){
+            saveDialog = new SaveDialog(this, dialogContext);
+            saveDialog.show();
+//            hashTag = saveDialog.getEditText();
+//            saveDialog.postSaveLastDiary(SharePreferenceController.getUserIdx(VoiceChatActivty.this),dialogContext,hashTag);
+
+        }else if(editText.getText().toString().equals("지난 일기")){
+            questionDialog.show();
+
+        }else if(editText.getText().toString().equals("대화 끝내기")){
+            Intent intent = new Intent(VoiceChatActivty.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+
+        }else{
+            dialogContext += "나 : "+ editText.getText().toString() + "<br/>";
+
+            postInputText(auth_head + auth_body, editText.getText().toString());
+        }
+
+
+        editText.setText(null);
     }
 
     @Override
