@@ -14,7 +14,8 @@
             android:id="@+id/chat_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ttttttt"/>
+            android:text="ttttttt"
+            android:textSize="30sp"/>
 
     </RelativeLayout>
 

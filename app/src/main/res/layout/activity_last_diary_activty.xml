@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,51 +9,56 @@
     android:layout_marginTop="10dp"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
-    android:layout_marginBottom="10dp">
+    android:layout_marginBottom="10dp"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="지난 일기"
+        android:textSize="30sp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="지난 일기" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
 
         <Button
             android:id="@+id/btn_search_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="날짜로 검색" />
+            android:text="날짜로 검색"
+            android:textSize="30sp"/>
 
         <Button
             android:id="@+id/btn_search_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="태그로 검색" />
+            android:text="태그로 검색"
+            android:textSize="30sp"/>
 
         <Button
             android:id="@+id/btn_search_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="전체 불러오기" />
+            android:text="전체 불러오기"
+            android:textSize="30sp"/>
 
 
         <Button
             android:id="@+id/btn_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="삭제" />
+            android:text="삭제"
+            android:textSize="30sp"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/last_diary_rcv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="16dp"></android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/last_diary_rcv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp"></android.support.v7.widget.RecyclerView>
 
-
-</RelativeLayout>
+</LinearLayout>
