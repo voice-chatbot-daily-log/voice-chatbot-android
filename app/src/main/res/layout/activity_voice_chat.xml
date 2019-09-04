@@ -29,10 +29,11 @@
         <EditText
             android:id="@+id/editText"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
             android:layout_weight="1"
             android:ems="10"
             android:hint="대화 입력"
+            android:textSize="30sp"
             android:inputType="textPersonName" />
 
         <Button
@@ -40,7 +41,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="btnMethod"
-            android:text="보내기" />
+            android:text="보내기"
+            android:textSize="30sp"/>
     </LinearLayout>
 
 
