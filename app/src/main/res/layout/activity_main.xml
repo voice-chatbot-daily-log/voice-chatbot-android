@@ -5,13 +5,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-    <TextView
+    tools:context=".MainActivity"
+    android:background="#ffffff">
+
+    <ImageView
         android:layout_above="@+id/btn_setting"
         android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="음성인식기반 챗봇 일지 어플"/>
+        android:src="@drawable/moda_app"/>
 
 
     <LinearLayout
@@ -20,18 +22,22 @@
         android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center">
 
         <Button
             android:id="@+id/btn_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="시작"/>
+            android:text="시작"
+            android:textSize="30sp"/>
         <Button
             android:id="@+id/btn_record"
+            android:layout_marginTop="30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="지난일기"/>
+            android:text="지난일기"
+            android:textSize="30sp"/>
 
 
     </LinearLayout>
