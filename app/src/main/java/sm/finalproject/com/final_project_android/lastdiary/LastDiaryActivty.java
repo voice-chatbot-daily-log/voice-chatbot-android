@@ -228,11 +228,13 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                                 else {
                                     textToSpeech.speak("내용을 불러올 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
                                     tts_stop_flag = 0;
-                                    stop_flag=0;
+                                    //stop_flag=0;
                                     handler.postDelayed(new Runnable() {
                                         public void run() {
-                                                startListening();
-                                                getContentByVoice_flag = 1;
+                                            Log.d("왜", "ㅇㅇ");
+                                            stop_flag=0;
+                                            startListening();
+                                            getContentByVoice_flag = 1;
                                         }
                                     }, 3000);  // 2000은 2초를 의미합니다.
                                 }
@@ -279,6 +281,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                                 go_back_flag=1;
                                 handler.postDelayed(new Runnable() {
                                     public void run() {
+                                        stop_flag=0;
                                         startListening();
                                     }
                                 }, 7500);  // 2000은 2초를 의미합니다.
@@ -286,9 +289,9 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                             else {
                                 textToSpeech.speak("내용을 불러올 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
                                 tts_stop_flag = 0;
-                                stop_flag=0;
                                 handler.postDelayed(new Runnable() {
                                     public void run() {
+                                        stop_flag=0;
                                             startListening();
                                             getContentByVoice_flag = 1;
                                     }
@@ -344,9 +347,9 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                             else {
                                 textToSpeech.speak("내용을 불러올 일기의 날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
                                 tts_stop_flag = 0;
-                                stop_flag=0;
                                 handler.postDelayed(new Runnable() {
                                     public void run() {
+                                        stop_flag=0;
                                             startListening();
                                             getContentByVoice_flag = 1;
                                     }
@@ -377,7 +380,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                         textToSpeech.speak("날짜에 해당하는 일기가 존재하지 않습니다.", TextToSpeech.QUEUE_FLUSH, null);
 
                     }else{
-                          textToSpeech.speak("삭제가 완료되었습니다.", TextToSpeech.QUEUE_FLUSH, null);
+                        textToSpeech.speak("삭제가 완료되었습니다.", TextToSpeech.QUEUE_FLUSH, null);
                     }
 
                     if (tts_stop_flag == 0) {
@@ -388,10 +391,12 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                     }
 
                     if (tts_stop_flag == 1) {
+                        Log.d("여기", "ㅇㅇ");
                         go_back_flag=1;
                         textToSpeech.speak("첫화면으로 가려면 첫화면, 뒤로 가려면 뒤로 라고 말해주세요", TextToSpeech.QUEUE_FLUSH, null);
                         handler.postDelayed(new Runnable() {
                             public void run() {
+                                stop_flag=0;
                                 startListening();
 
                             }
@@ -467,25 +472,31 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
         @Override
         public void onError(int error) {
-            String message;
+            String message="";
 
             switch (error) {
                 case SpeechRecognizer.ERROR_AUDIO:
                     message = "오디오 에러";
+                    Log.d("stt에러", "1");
                     break;
                 case SpeechRecognizer.ERROR_CLIENT:
                     message = "클라이언트 에러";
+                    Log.d("stt에러", "2");
                     break;
                 case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
                     message = "퍼미션 없음";
+                    Log.d("stt에러", "3");
                     break;
                 case SpeechRecognizer.ERROR_NETWORK:
                     message = "네트워크 에러";
+                    Log.d("stt에러", "4");
                     break;
                 case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
                     message = "네트웍 타임아웃";
+                    Log.d("stt에러", "5");
                     break;
                 case SpeechRecognizer.ERROR_NO_MATCH:
+                    Log.d("stt에러", "6");
                     String sttError1 = "다시 말해주세요.";
                     textToSpeech.speak(sttError1, TextToSpeech.QUEUE_FLUSH, null);
 
@@ -499,11 +510,14 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                     break;
                 case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
                     message = "RECOGNIZER가 바쁨";
+                    Log.d("stt에러", "7");
                     break;
                 case SpeechRecognizer.ERROR_SERVER:
                     message = "서버가 이상함";
+                    Log.d("stt에러", "8");
                     break;
                 case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
+                    Log.d("stt에러", "9");
                     String sttError2 = "다시 말해주세요.";
                     textToSpeech.speak(sttError2, TextToSpeech.QUEUE_FLUSH, null);
 
@@ -516,6 +530,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                     }, 1800);  // 2000은 2초를 의미합니다.
                     break;
                 default:
+                    Log.d("stt에러", "10");
                     message = "알 수 없는 오류임";
                     break;
             }
@@ -681,12 +696,28 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
 
     public void getContentByVoice(String inputText, ArrayList<LastDiaryData> lastDiaryData){
-        for(int i = 0; i< lastDiaryData.size();i++){
-            if(inputText.equals(lastDiaryData.get(i).last_diary_date)){
+        for (int i = 0; i < lastDiaryData.size(); i++) {
+            if (inputText.equals(lastDiaryData.get(i).last_diary_date)) {
                 Intent intent = new Intent(this, LastDiaryContentActivity.class);
-                intent.putExtra("diary_content",lastDiaryData.get(i).last_diary_content);
+                intent.putExtra("diary_content", lastDiaryData.get(i).last_diary_content);
                 startActivity(intent);
                 finish();
+            }
+            else{
+                if(i==(lastDiaryData.size())-1){
+                    Log.d("ㅇㅇ", "ㅇㅇ");
+                    if(isSTTPlaying(LastDiaryActivty.this)){
+                        speechRecognizer.cancel();
+                    }
+                    //textToSpeech.speak("작성한 일기가 없습니다. 첫화면으로 가려면 첫화면, 뒤로 가려면 뒤로 라고 말해주세요", TextToSpeech.QUEUE_FLUSH, null);
+                    tts_stop_flag=0;
+                    go_back_flag=1;
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            startListening();
+                        }
+                    }, 7500);  // 2000은 2초를 의미합니다.
+                }
             }
         }
 

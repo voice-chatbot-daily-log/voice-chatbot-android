@@ -82,7 +82,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
     private static final int REQUEST_CODE_AUDIO_AND_WRITE_EXTERNAL_STORAGE = 0;
     final String auth_head = "Bearer ";
-    final String auth_body = "ya29.c.El93B7Q5234yZLQqBEeSKV2713kRAmIrYfTcjTlo4Iw2tyoWNL3l3AX6dLzKIJJitL-4oWeeKxv97s3I-G2BKcyH85eQhBnzCMZ3NWWFH8v5Zbus1eh5B9BbYav4KfpWlQ";
+    final String auth_body = "ya29.c.El97BwyHOCoXnqM1gT92Q2ZujgSCyt_gwqvx-Hhz_qcRbgUeD1X8rYA3NFKuhcA30m85JIPpBGEv3wqobNHTSsCEIMGO_ELlaF7lCHyp5Xgav7Wp_q9-9RLI51R5Ouca4w";
 
     Handler handler;
 
@@ -348,7 +348,6 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                 Log.d("확인3",String.valueOf(ttsClient.isPlaying()));
 
                 if(inputText.equals("송이야")){
-                    menu_flag=1;
 
                     chatData.add(new ChatData(inputText, 1));
                     chat_rcv.setAdapter(chatAdapter);
@@ -356,6 +355,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                     dialogContext += "나 : "+ inputText + "<br/>";
 
                     postInputText(auth_head + auth_body, inputText);
+                    menu_flag=1;
                 }
 
                 if(menu_flag==1) {
@@ -400,7 +400,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                                 ttsClient.stop();
                                 sttClient.startRecording(false);
                             }
-                        }, 3000);  // 2000은 2초를 의미합니다.
+                        }, 2000);  // 2000은 2초를 의미합니다.
 
                         menu_flag = 0;
                         save_flag = -1;
@@ -408,9 +408,24 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                     }
 
                     else{ //3개 메뉴가 아닌 것을 말했을 때 들어 오는 곳
-                        Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
-                        menu_flag =1;
+                        if(inputText.equals("송이야")) {
+                            Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
+                            Log.d("ㅇㄹ", "" + inputText);
 
+                            String sttError1 = "다시 말해주세요.";
+                            ttsClient.play(sttError1);
+
+                            handler.postDelayed(new Runnable() {
+                                public void run() {
+                                    ttsClient.stop();
+                                    Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                                    sttClient.startRecording(false);
+                                }
+                            }, 1800);  // 2000은 2초를 의미합니다.
+                        }
                     }
 
                 }
@@ -431,7 +446,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                                     ttsClient.stop();
                                     sttClient.startRecording(false);
                                 }
-                            }, 3000);  // 2000은 2초를 의미합니다.
+                            }, 2000);  // 2000은 2초를 의미합니다.
 
                             menu_flag = 0;
                             save_flag = -1;
