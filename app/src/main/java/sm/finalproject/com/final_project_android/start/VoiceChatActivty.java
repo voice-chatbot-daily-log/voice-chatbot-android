@@ -498,7 +498,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
             public void onResponse(Call<PostChatResponse> call, Response<PostChatResponse> response) {
                 if(response.isSuccessful()) { //사용자의 응답을 받고 DialogFlow가 응답을 나타내는 곳
                     first_start_msg = response.body().queryResult.fulfillmentText;
-                    if (first_start_msg.equals("안녕?")) {
+                    if (first_start_msg.equals("대화를 시작하려면 안녕, 메뉴를 불러오려면 송이야 라고 말해줘")) {
                         dialogContext += "챗봇 : "+first_start_msg + "<br/>";
                         ttsClient.play(first_start_msg);
 
