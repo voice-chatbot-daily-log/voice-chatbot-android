@@ -13,8 +13,8 @@ public class ApplicationController extends Application {
     private NetworkService networkService;
     public static Context appContext = null;
     private static ApplicationController instance;
-    //test용 url
-    private static String baseUrl = "https://dialogflow.googleapis.com/v2/projects/dflow-88b76/agent/sessions/90fad3c2-eba6-7e7b-4062-8bb77c629132:detectIntent/";
+
+    private static String baseUrl = "https://dialogflow.googleapis.com/v2/projects/voicechatbot-uqodsu/agent/sessions/6978cd24-5de8-7bfb-083c-81d45a005c77:detectIntent/";
 
     public static ApplicationController getInstance() {
         return instance;
