@@ -82,7 +82,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
     private static final int REQUEST_CODE_AUDIO_AND_WRITE_EXTERNAL_STORAGE = 0;
     final String auth_head = "Bearer ";
-    final String auth_body = "ya29.c.El97BwyHOCoXnqM1gT92Q2ZujgSCyt_gwqvx-Hhz_qcRbgUeD1X8rYA3NFKuhcA30m85JIPpBGEv3wqobNHTSsCEIMGO_ELlaF7lCHyp5Xgav7Wp_q9-9RLI51R5Ouca4w";
+    final String auth_body = "ya29.c.El9-B--F3F4QhPsoSBOBBRHctR59XbxguLA0UI--IMcY9s_ekn6eB7uA387a7SIgqmTaP4EUopT8xznrsq0T4jKeS4hg5X4LNVRnvtI15XxD74AypIs2APAz6oN7pX7dVg";
 
     Handler handler;
 

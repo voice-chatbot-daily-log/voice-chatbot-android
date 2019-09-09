@@ -87,7 +87,7 @@ public class SaveDialog extends Dialog {
         //날짜구하기
         long now = System.currentTimeMillis();
         Date date = new Date(now);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 M월 dd일");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 M월 D일");
         String realDate = dateFormat.format(date);
 
 
