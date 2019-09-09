@@ -82,7 +82,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
     private static final int REQUEST_CODE_AUDIO_AND_WRITE_EXTERNAL_STORAGE = 0;
     final String auth_head = "Bearer ";
-    final String auth_body = "ya29.c.El9-B_SNc3tt3NR4KxkAjq7qfHiEKC0naqUGiZem7lagdqUWRCVUnKua7Rm3-IwfbbuXU8v7lH0YcRRUh1_YesMKjR5lFnnXvDB5NmcqQRYtzQfv7eGKLTvxBCSI7tKgyg";
+    final String auth_body = "ya29.c.El9-B_Q4M7__TlaFNwnI8IvqJrj1cRONHI5v19GD-Qp6LUO4EcfA6BWtigWcKuWsNJQL3rtlXQyTfBPDUE1lCviCjw5brhgdnzpDu7o7qzTa9W3GDgqbh2NCxnd9TuCgOg";
 
     Handler handler;
 
@@ -351,6 +351,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
                     chatData.add(new ChatData(inputText, 1));
                     chat_rcv.setAdapter(chatAdapter);
+                    chat_rcv.scrollToPosition(chatData.size()-1);
 
                     dialogContext += "나 : "+ inputText + "<br/>";
 
@@ -469,6 +470,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                         dialogContext += "나 : " + inputText + "<br/>";
                         chatData.add(new ChatData(inputText, 1));
                         chat_rcv.setAdapter(chatAdapter);
+                        chat_rcv.scrollToPosition(chatData.size()-1);
 
                         postInputText(auth_head + auth_body, inputText);
                     }
@@ -511,6 +513,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                     chatData.add(new ChatData(response.body().queryResult.fulfillmentText, 0));
                     chatAdapter = new ChatAdapter(chatData);
                     chat_rcv.setAdapter(chatAdapter);
+                    chat_rcv.scrollToPosition(chatData.size()-1);
 
                     Log.d("확인",String.valueOf(ttsClient.isPlaying()));
                     if (PermissionUtils.checkAudioRecordPermission(VoiceChatActivty.this)) {
@@ -575,6 +578,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
         chatData.add(new ChatData(editText.getText().toString(), 1));
         chat_rcv.setAdapter(chatAdapter);
+        chat_rcv.scrollToPosition(chatData.size()-1);
 
         if(editText.getText().toString().equals("저장하기")){
             saveDialog = new SaveDialog(this, dialogContext);
