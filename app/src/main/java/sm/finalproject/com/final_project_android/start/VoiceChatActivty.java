@@ -82,7 +82,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
     private static final int REQUEST_CODE_AUDIO_AND_WRITE_EXTERNAL_STORAGE = 0;
     final String auth_head = "Bearer ";
-    final String auth_body = "ya29.c.El9-B--F3F4QhPsoSBOBBRHctR59XbxguLA0UI--IMcY9s_ekn6eB7uA387a7SIgqmTaP4EUopT8xznrsq0T4jKeS4hg5X4LNVRnvtI15XxD74AypIs2APAz6oN7pX7dVg";
+    final String auth_body = "ya29.c.El9-B_SNc3tt3NR4KxkAjq7qfHiEKC0naqUGiZem7lagdqUWRCVUnKua7Rm3-IwfbbuXU8v7lH0YcRRUh1_YesMKjR5lFnnXvDB5NmcqQRYtzQfv7eGKLTvxBCSI7tKgyg";
 
     Handler handler;
 
@@ -267,8 +267,8 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                     sttClient.cancelRecording();
                 }
                 else {
-                    String sttError3 = "다시 말해주세요.";
-                    ttsClient.play(sttError3);
+                    //String sttError3 = "다시 말해주세요.";
+                    //ttsClient.play(sttError3);
 
                     handler.postDelayed(new Runnable() {
                         public void run() {
@@ -498,7 +498,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
             public void onResponse(Call<PostChatResponse> call, Response<PostChatResponse> response) {
                 if(response.isSuccessful()) { //사용자의 응답을 받고 DialogFlow가 응답을 나타내는 곳
                     first_start_msg = response.body().queryResult.fulfillmentText;
-                    if (first_start_msg.equals("대화를 시작하려면 안녕, 메뉴를 불러오려면 송이야 라고 말해줘")) {
+                    if (first_start_msg.equals("대화 시작은 안녕, 메뉴 불러오기는 송이야")) {
                         dialogContext += "챗봇 : "+first_start_msg + "<br/>";
                         ttsClient.play(first_start_msg);
 

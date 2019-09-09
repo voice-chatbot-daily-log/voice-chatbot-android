@@ -703,22 +703,6 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                 startActivity(intent);
                 finish();
             }
-            else{
-                if(i==(lastDiaryData.size())-1){
-                    Log.d("ㅇㅇ", "ㅇㅇ");
-                    if(isSTTPlaying(LastDiaryActivty.this)){
-                        speechRecognizer.cancel();
-                    }
-                    //textToSpeech.speak("작성한 일기가 없습니다. 첫화면으로 가려면 첫화면, 뒤로 가려면 뒤로 라고 말해주세요", TextToSpeech.QUEUE_FLUSH, null);
-                    tts_stop_flag=0;
-                    go_back_flag=1;
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
-                            startListening();
-                        }
-                    }, 7500);  // 2000은 2초를 의미합니다.
-                }
-            }
         }
 
     }
