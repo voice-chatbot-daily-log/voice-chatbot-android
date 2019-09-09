@@ -82,7 +82,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
     private static final int REQUEST_CODE_AUDIO_AND_WRITE_EXTERNAL_STORAGE = 0;
     final String auth_head = "Bearer ";
-    final String auth_body = "ya29.c.El91B99zwjbYbYp_hpq4c6GlYwqgdXgQUu-E8IqS6L5eTOzz0rljf2HV73IStfEgpEnj52aw4w0v9J2PdQiZhgUQibeTj_dWNi3B0gxDFzyhyoh_ZLyKHYAOHjl65A63Ag";
+    final String auth_body = "ya29.c.El97BwyHOCoXnqM1gT92Q2ZujgSCyt_gwqvx-Hhz_qcRbgUeD1X8rYA3NFKuhcA30m85JIPpBGEv3wqobNHTSsCEIMGO_ELlaF7lCHyp5Xgav7Wp_q9-9RLI51R5Ouca4w";
 
     Handler handler;
 
@@ -348,7 +348,6 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                 Log.d("확인3",String.valueOf(ttsClient.isPlaying()));
 
                 if(inputText.equals("송이야")){
-                    menu_flag=1;
 
                     chatData.add(new ChatData(inputText, 1));
                     chat_rcv.setAdapter(chatAdapter);
@@ -356,6 +355,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                     dialogContext += "나 : "+ inputText + "<br/>";
 
                     postInputText(auth_head + auth_body, inputText);
+                    menu_flag=1;
                 }
 
                 if(menu_flag==1) {
@@ -400,7 +400,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                                 ttsClient.stop();
                                 sttClient.startRecording(false);
                             }
-                        }, 3000);  // 2000은 2초를 의미합니다.
+                        }, 2000);  // 2000은 2초를 의미합니다.
 
                         menu_flag = 0;
                         save_flag = -1;
@@ -408,9 +408,24 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                     }
 
                     else{ //3개 메뉴가 아닌 것을 말했을 때 들어 오는 곳
-                        Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
-                        menu_flag =1;
+                        if(inputText.equals("송이야")) {
+                            Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
+                            Log.d("ㅇㄹ", "" + inputText);
 
+                            String sttError1 = "다시 말해주세요.";
+                            ttsClient.play(sttError1);
+
+                            handler.postDelayed(new Runnable() {
+                                public void run() {
+                                    ttsClient.stop();
+                                    Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                                    sttClient.startRecording(false);
+                                }
+                            }, 1800);  // 2000은 2초를 의미합니다.
+                        }
                     }
 
                 }
@@ -431,7 +446,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                                     ttsClient.stop();
                                     sttClient.startRecording(false);
                                 }
-                            }, 3000);  // 2000은 2초를 의미합니다.
+                            }, 2000);  // 2000은 2초를 의미합니다.
 
                             menu_flag = 0;
                             save_flag = -1;
@@ -483,7 +498,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
             public void onResponse(Call<PostChatResponse> call, Response<PostChatResponse> response) {
                 if(response.isSuccessful()) { //사용자의 응답을 받고 DialogFlow가 응답을 나타내는 곳
                     first_start_msg = response.body().queryResult.fulfillmentText;
-                    if (first_start_msg.equals("안녕?")) {
+                    if (first_start_msg.equals("대화를 시작하려면 안녕, 메뉴를 불러오려면 송이야 라고 말해줘")) {
                         dialogContext += "챗봇 : "+first_start_msg + "<br/>";
                         ttsClient.play(first_start_msg);
 
