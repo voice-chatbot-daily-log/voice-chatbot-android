@@ -82,7 +82,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
     private static final int REQUEST_CODE_AUDIO_AND_WRITE_EXTERNAL_STORAGE = 0;
     final String auth_head = "Bearer ";
-    final String auth_body = "ya29.c.El9-B_Q4M7__TlaFNwnI8IvqJrj1cRONHI5v19GD-Qp6LUO4EcfA6BWtigWcKuWsNJQL3rtlXQyTfBPDUE1lCviCjw5brhgdnzpDu7o7qzTa9W3GDgqbh2NCxnd9TuCgOg";
+    final String auth_body = "ya29.c.El-ABw8SoX9Cdg24yGdpdcBZXTikr5eWAbCjtZ-Fjekny5yiM7Kso-iq8IFjX9o9s-kqKRnczxYlCRPZ-sNGkcm3UwfPQCvsIlQWBRtTyzJN_SBVPfTt4I3IxfxIPPcj_w";
 
     Handler handler;
 
@@ -255,7 +255,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                     handler.postDelayed(new Runnable() {
                         public void run() {
                             ttsClient.stop();
-                            Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
                             sttClient.startRecording(false);
                         }
                     }, 1800);  // 2000은 2초를 의미합니다.
@@ -322,7 +322,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
     @Override
     public void onResults(Bundle results) {
-        Toast.makeText(getApplicationContext(),"Dd", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(),"Dd", Toast.LENGTH_SHORT).show();
 
         final StringBuilder builder = new StringBuilder();
 
@@ -370,7 +370,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                         sttClient.stopRecording();
 
                         String q_save = "저장하시겠습니까? 네 또는 아니요 라고 말해주세요.";
-                        Toast.makeText(getApplicationContext(), q_save, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), q_save, Toast.LENGTH_SHORT).show();
 
                         ttsClient.play(q_save);
                         save_flag = 1;
@@ -410,10 +410,10 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
                     else{ //3개 메뉴가 아닌 것을 말했을 때 들어 오는 곳
                         if(inputText.equals("송이야")) {
-                            Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
                         }
                         else{
-                            Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
                             Log.d("ㅇㄹ", "" + inputText);
 
                             String sttError1 = "다시 말해주세요.";
@@ -422,7 +422,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
                             handler.postDelayed(new Runnable() {
                                 public void run() {
                                     ttsClient.stop();
-                                    Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
                                     sttClient.startRecording(false);
                                 }
                             }, 1800);  // 2000은 2초를 의미합니다.
@@ -454,7 +454,7 @@ public class VoiceChatActivty extends AppCompatActivity implements SpeechRecogni
 
                         }
                         else if(inputText.equals("아니요")){
-                            Toast.makeText(getApplicationContext(), "저장안함", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), "저장안함", Toast.LENGTH_SHORT).show();
                         }
                     }
                     else if(save_flag == -1){ //해쉬태그 입력

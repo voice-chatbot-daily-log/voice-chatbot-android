@@ -115,7 +115,7 @@ public class LastDiaryContentActivity extends AppCompatActivity implements TextT
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(LastDiaryContentActivity.this);
 
         if (PermissionUtils.checkAudioRecordPermission(LastDiaryContentActivity.this)) {
-            Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
             speechRecognizer.setRecognitionListener(speechToTextListener);
             speechRecognizer.startListening(i);
         }
@@ -157,7 +157,7 @@ public class LastDiaryContentActivity extends AppCompatActivity implements TextT
             final ArrayList<String> texts = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 
             final String inputText = texts.get(0);
-            Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
 
             if(go_back_flag==1) {
                 if (inputText.equals("첫 화면")) {
@@ -173,7 +173,7 @@ public class LastDiaryContentActivity extends AppCompatActivity implements TextT
                     handler.postDelayed(new Runnable() {
                         public void run() {
                             diary_tts.stop();
-                            Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
                             startListening();
                         }
                     }, 1800);  // 2000은 2초를 의미합니다.

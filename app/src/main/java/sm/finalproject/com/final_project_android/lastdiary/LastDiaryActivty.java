@@ -437,7 +437,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
 
         if (PermissionUtils.checkAudioRecordPermission(LastDiaryActivty.this)) {
             if(stop_flag!=1) {
-                Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
                 speechRecognizer.setRecognitionListener(speechToTextListener);
                 speechRecognizer.startListening(i);
             }
@@ -503,7 +503,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                     handler.postDelayed(new Runnable() {
                         public void run() {
                             textToSpeech.stop();
-                            Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
                             startListening();
                         }
                     }, 1800);  // 2000은 2초를 의미합니다.
@@ -524,7 +524,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                     handler.postDelayed(new Runnable() {
                         public void run() {
                             textToSpeech.stop();
-                            Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
                             startListening();
                         }
                     }, 1800);  // 2000은 2초를 의미합니다.
@@ -542,7 +542,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             final ArrayList<String> texts = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 
             final String inputText = texts.get(0);
-            Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
 
             if (inputText.equals("날짜")) {
                 textToSpeech.speak("날짜를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
@@ -555,7 +555,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
             }
 
             else if(inputText.equals("태그")) {
-                Toast.makeText(getApplicationContext(), "태그로 검색", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "태그로 검색", Toast.LENGTH_SHORT).show();
                 textToSpeech.speak("태그를 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
                 handler.postDelayed(new Runnable() {
                     public void run() {
@@ -565,12 +565,12 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                 }, 1100);  // 2000은 2초를 의미합니다.
             }
             else if(inputText.equals("전체")) {
-                Toast.makeText(getApplicationContext(), "전체 불러오기", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "전체 불러오기", Toast.LENGTH_SHORT).show();
                 getLastDiary();
                 searchAll_flag =1;
             }
             else if(inputText.equals("삭제")) {
-                Toast.makeText(getApplicationContext(), "삭제하기", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "삭제하기", Toast.LENGTH_SHORT).show();
                 textToSpeech.speak("전체를 삭제하시려면 전체 삭제, 일부를 삭제하시려면 일부 삭제라고 말해주세요.", TextToSpeech.QUEUE_FLUSH, null);
                 handler.postDelayed(new Runnable() {
                     public void run() {
@@ -585,7 +585,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                 handler.postDelayed(new Runnable() {
                     public void run() {
                         textToSpeech.stop();
-                        Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
                         startListening();
                     }
                 }, 1800);  // 2000은 2초를 의미합니다.
@@ -627,7 +627,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                     handler.postDelayed(new Runnable() {
                         public void run() {
                             textToSpeech.stop();
-                            Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
                             startListening();
                         }
                     }, 1800);  // 2000은 2초를 의미합니다.
@@ -652,7 +652,7 @@ public class LastDiaryActivty extends AppCompatActivity implements TextToSpeech.
                         handler.postDelayed(new Runnable() {
                             public void run() {
                                 textToSpeech.stop();
-                                Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
                                 startListening();
                             }
                         }, 1800);  // 2000은 2초를 의미합니다.

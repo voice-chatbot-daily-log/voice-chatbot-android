@@ -87,7 +87,7 @@ public class SaveDialog extends Dialog {
         //날짜구하기
         long now = System.currentTimeMillis();
         Date date = new Date(now);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 M월 D일");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 M월 dd일");
         String realDate = dateFormat.format(date);
 
 
@@ -102,8 +102,7 @@ public class SaveDialog extends Dialog {
             @Override
             public void onResponse(Call<PostLastDiaryResponse> call, Response<PostLastDiaryResponse> response) {
                 if(response.isSuccessful()){
-
-                    Toast.makeText(getContext(), "!!저장성공!!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "!!저장성공!!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(mActivty, MainActivity.class);
                     mActivty.startActivity(intent);
                     mActivty.finish();
