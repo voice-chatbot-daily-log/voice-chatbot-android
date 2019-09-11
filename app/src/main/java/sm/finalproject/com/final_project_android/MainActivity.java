@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         i.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
 
         mRecognizer = SpeechRecognizer.createSpeechRecognizer(MainActivity.this);
-        Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
 
 
         if (PermissionUtils.checkAudioRecordPermission(MainActivity.this)) {
@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                     handler.postDelayed(new Runnable() {
                         public void run() {
                             tts.stop();
-                            Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
                             startListening();
                         }
                     }, 1800);  // 2000은 2초를 의미합니다.
@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                     handler.postDelayed(new Runnable() {
                         public void run() {
                             tts.stop();
-                            Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
                             startListening();
                         }
                     }, 1800);  // 2000은 2초를 의미합니다.
@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             final ArrayList<String> texts = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 
             String inputText = texts.get(0);
-            Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
 
             Log.d("넘어옴?", "ㅇㅇ");
 
@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 handler.postDelayed(new Runnable() {
                     public void run() {
                         tts.stop();
-                        Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
                         startListening();
                     }
                 }, 1800);  // 2000은 2초를 의미합니다.
